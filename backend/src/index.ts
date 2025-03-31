@@ -47,30 +47,39 @@ function updateBucket(identifier: string): boolean {
 
 // Rate Limiting Middleware
 app.use('*', async (c, next) => {
-  // Use IP address as the identifier (or adapt to use JWT token/user ID)
   const clientIp = c.req.header('X-Forwarded-For') || c.req.header('CF-Connecting-IP') || 'unknown-ip';
+  const referer = c.req.header('Referer') || '';
 
-  // Check rate limit
+  // Bypass rate limiting if the request comes from Cloudflare Worker
+  if (referer.includes('your-worker-name.workers.dev')) {
+    await next();
+    return;
+  }
+
   const isAllowed = updateBucket(clientIp);
-
   if (!isAllowed) {
     return c.json(
-      {
-        error: 'Rate limit exceeded',
-        message: `Limit of ${BUCKET_CAPACITY} requests reached. Try again later.`,
-      },
-      429 // Too Many Requests
+      { error: 'Rate limit exceeded', message: `Limit of ${BUCKET_CAPACITY} requests reached.` },
+      429
     );
   }
 
-  // Proceed to the next middleware/route
   await next();
 });
 
+
 // CORS Configuration
+// app.use(
+//   cors({
+//     origin: 'https://share-it-nine.vercel.app/', // Allows all origins; you can specify allowed origins here
+//     allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+//     allowHeaders: ['Content-Type', 'Authorization'],
+//   })
+// );
+
 app.use(
   cors({
-    origin: '*', // Allows all origins; you can specify allowed origins here
+    origin: ['https://share-it-nine.vercel.app', "https://backend.1ms23ai014.workers.dev"], // Allow frontend + Worker
     allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowHeaders: ['Content-Type', 'Authorization'],
   })
