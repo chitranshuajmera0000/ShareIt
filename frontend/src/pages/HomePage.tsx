@@ -80,7 +80,7 @@ const HomePage = () => {
                 <img
                   src="https://res.cloudinary.com/dxj9gigbq/image/upload/v1742018435/upscalemedia-transformed_woy6ow.png"
                   alt="ShareIt Logo"
-                  className="h-12 sm:h-20 w-auto rounded-md my-2"
+                  className="h-12 sm:h-16 w-auto rounded-md my-2"
                 />
               </Link>
             </div>
@@ -89,10 +89,28 @@ const HomePage = () => {
                 <Menu className="w-6 h-6 text-teal-600" />
               </button>
             </div>
-            <nav className={`${isMenuOpen ? 'block' : 'hidden'} md:flex md:ml-10 md:space-x-8 absolute md:static top-16 left-0 w-full md:w-auto bg-white md:bg-transparent p-4 md:p-0`}>
-              <a href="#features" className="block md:inline text-teal-600 hover:text-teal-800 font-medium mb-2 md:mb-0">Features</a>
-              <a href="#testimonials" className="block md:inline text-teal-600 hover:text-teal-800 font-medium mb-2 md:mb-0">Testimonials</a>
-              <a href="#faq" className="block md:inline text-teal-600 hover:text-teal-800 font-medium">FAQ</a>
+            <nav
+              className={`${isMenuOpen ? "block" : "hidden"
+                } md:flex md:ml-10 md:space-x-8 absolute md:static top-16 left-0 w-full md:w-auto bg-white md:bg-transparent p-4 md:p-0`}
+            >
+              <a
+                href="#features"
+                className="block md:inline text-teal-600 hover:text-teal-800 font-medium mb-2 md:mb-0"
+              >
+                Features
+              </a>
+              <a
+                href="#testimonials"
+                className="block md:inline text-teal-600 hover:text-teal-800 font-medium mb-2 md:mb-0"
+              >
+                Testimonials
+              </a>
+              <a
+                href="#faq"
+                className="block md:inline text-teal-600 hover:text-teal-800 font-medium"
+              >
+                FAQ
+              </a>
             </nav>
             <div className="hidden md:flex items-center space-x-4">
               <Link to="/signup" className="text-coral-500 hover:text-coral-700 transition-colors">
@@ -152,7 +170,9 @@ const HomePage = () => {
       <section className="py-12 sm:py-16 bg-teal-50" id="demo">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10 sm:mb-16">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">Powerful Rich Text Editor</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Powerful Rich Text Editor
+            </h2>
             <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
               Our intuitive editor comes with all the features you need to create beautiful, engaging content.
             </p>
@@ -209,18 +229,44 @@ const HomePage = () => {
       <section className="py-12 sm:py-20 bg-white" id="features">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10 sm:mb-16">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">Everything You Need</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Everything You Need
+            </h2>
             <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
               ShareIt comes packed with all the tools you need to create, publish, and grow your blog.
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-            <FeatureCard icon={<Edit3 size={20} />} title="Rich Text Editor" description="Create beautiful posts with our intuitive editor supporting images, videos, and formatting." />
-            <FeatureCard icon={<Layout size={20} />} title="Responsive Design" description="Your blog looks great on any device, from desktop to mobile, with no extra work." />
-            <FeatureCard icon={<Zap size={20} />} title="Fast Performance" description="Lightning-fast page loads and optimized images keep your readers engaged." />
-            <FeatureCard icon={<Share2 size={20} />} title="Social Sharing" description="Integrated social sharing tools help spread your content across platforms." />
-            <FeatureCard icon={<Users size={20} />} title="Community Building" description="Comments, reactions, and subscriber tools to build your audience." />
-            <FeatureCard icon={<Play size={20} />} title="Media Integration" description="Easily embed videos, podcasts, and interactive content in your posts." />
+            <FeatureCard
+              icon={<Edit3 size={20} />}
+              title="Rich Text Editor"
+              description="Create beautiful posts with our intuitive editor supporting images, videos, and formatting."
+            />
+            <FeatureCard
+              icon={<Layout size={20} />}
+              title="Responsive Design"
+              description="Your blog looks great on any device, from desktop to mobile, with no extra work."
+            />
+            <FeatureCard
+              icon={<Zap size={20} />}
+              title="Fast Performance"
+              description="Lightning-fast page loads and optimized images keep your readers engaged."
+            />
+            <FeatureCard
+              icon={<Share2 size={20} />}
+              title="Social Sharing"
+              description="Integrated social sharing tools help spread your content across platforms."
+            />
+            <FeatureCard
+              icon={<Users size={20} />}
+              title="Community Building"
+              description="Comments, reactions, and subscriber tools to build your audience."
+            />
+            <FeatureCard
+              icon={<Play size={20} />}
+              title="Media Integration"
+              description="Easily embed videos, podcasts, and interactive content in your posts."
+            />
           </div>
         </div>
       </section>
@@ -229,7 +275,9 @@ const HomePage = () => {
       <section className="py-12 sm:py-20 bg-purple-50" id="testimonials">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10 sm:mb-16">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">What Our Users Say</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              What Our Users Say
+            </h2>
             <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
               Join thousands of content creators who have chosen ShareIt for their publishing needs.
             </p>
@@ -239,7 +287,23 @@ const HomePage = () => {
               content="ShareIt changed my writing experience. The editor is intuitive and the SEO tools helped me grow my audience by 200% in just 3 months."
               author="Sarah Johnson"
               role="Travel Blogger"
-              avatar="data:image/jpeg;base64,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2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a██
+              avatar=""
+            />
+            <Testimonial
+              content="The responsive design and fast performance have made my blog a hit with my readers. I couldn’t ask for more!"
+              author="John Doe"
+              role="Tech Writer"
+              avatar=""
+            />
+            <Testimonial
+              content="The community-building tools are fantastic. My readers are more engaged than ever before."
+              author="Emily Carter"
+              role="Lifestyle Blogger"
+              avatar=""
+            />
+          </div>
+        </div>
+      </section>
 
       {/* CTA Section */}
       <section className="py-12 sm:py-20 bg-gradient-to-r from-teal-600 to-coral-600 text-white">
@@ -261,10 +325,10 @@ const HomePage = () => {
       <section className="py-12 sm:py-20 bg-white" id="faq">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10 sm:mb-16">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
-            <p className="text-lg sm:text-xl text-gray-600">
-              Have questions? We've got answers.
-            </p>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              Frequently Asked Questions
+            </h2>
+            <p className="text-lg sm:text-xl text-gray-600">Have questions? We've got answers.</p>
           </div>
           <div className="space-y-6 sm:space-y-8">
             {[
@@ -317,27 +381,71 @@ const HomePage = () => {
             <div>
               <h3 className="text-base sm:text-lg font-semibold mb-4">Product</h3>
               <ul className="space-y-2">
-                <li><a href="#features" className="text-teal-200 hover:text-white transition text-sm sm:text-base">Features</a></li>
-                <li><a href="#" className="text-teal-200 hover:text-white transition text-sm sm:text-base">Templates</a></li>
-                <li><a href="#" className="text-teal-200 hover:text-white transition text-sm sm:text-base">Integrations</a></li>
+                <li>
+                  <a href="#features" className="text-teal-200 hover:text-white transition text-sm sm:text-base">
+                    Features
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-teal-200 hover:text-white transition text-sm sm:text-base">
+                    Templates
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-teal-200 hover:text-white transition text-sm sm:text-base">
+                    Integrations
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
               <h3 className="text-base sm:text-lg font-semibold mb-4">Resources</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="text-teal-200 hover:text-white transition text-sm sm:text-base">Documentation</a></li>
-                <li><a href="#" className="text-teal-200 hover:text-white transition text-sm sm:text-base">Guides</a></li>
-                <li><a href="#" className="text-teal-200 hover:text-white transition text-sm sm:text-base">API</a></li>
-                <li><a href="#faq" className="text-teal-200 hover:text-white transition text-sm sm:text-base">FAQ</a></li>
+                <li>
+                  <a href="#" className="text-teal-200 hover:text-white transition text-sm sm:text-base">
+                    Documentation
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-teal-200 hover:text-white transition text-sm sm:text-base">
+                    Guides
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-teal-200 hover:text-white transition text-sm sm:text-base">
+                    API
+                  </a>
+                </li>
+                <li>
+                  <a href="#faq" className="text-teal-200 hover:text-white transition text-sm sm:text-base">
+                    FAQ
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
               <h3 className="text-base sm:text-lg font-semibold mb-4">Company</h3>
               <ul className="space-y-2">
-                <li><a href="#" className="text-teal-200 hover:text-white transition text-sm sm:text-base">About</a></li>
-                <li><a href="#" className="text-teal-200 hover:text-white transition text-sm sm:text-base">Blog</a></li>
-                <li><a href="#" className="text-teal-200 hover:text-white transition text-sm sm:text-base">Careers</a></li>
-                <li><a href="#" className="text-teal-200 hover:text-white transition text-sm sm:text-base">Contact</a></li>
+                <li>
+                  <a href="#" className="text-teal-200 hover:text-white transition text-sm sm:text-base">
+                    About
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-teal-200 hover:text-white transition text-sm sm:text-base">
+                    Blog
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-teal-200 hover:text-white transition text-sm sm:text-base">
+                    Careers
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-teal-200 hover:text-white transition text-sm sm:text-base">
+                    Contact
+                  </a>
+                </li>
               </ul>
             </div>
           </div>
@@ -346,9 +454,15 @@ const HomePage = () => {
               © {new Date().getFullYear()} ShareIt. All rights reserved.
             </p>
             <div className="flex space-x-4 sm:space-x-6">
-              <a href="#" className="text-teal-200 hover:text-white transition text-xs sm:text-sm">Terms</a>
-              <a href="#" className="text-teal-200 hover:text-white transition text-xs sm:text-sm">Privacy</a>
-              <a href="#" className="text-teal-200 hover:text-white transition text-xs sm:text-sm">Cookies</a>
+              <a href="#" className="text-teal-200 hover:text-white transition text-xs sm:text-sm">
+                Terms
+              </a>
+              <a href="#" className="text-teal-200 hover:text-white transition text-xs sm:text-sm">
+                Privacy
+              </a>
+              <a href="#" className="text-teal-200 hover:text-white transition text-xs sm:text-sm">
+                Cookies
+              </a>
             </div>
           </div>
         </div>
