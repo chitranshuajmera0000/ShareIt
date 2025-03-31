@@ -1,0 +1,94 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 Int                  @id @default(autoincrement())
+  username           String               @unique
+  password           String
+  posts              Blog[]
+  details            Details[]
+  BlogInteraction    BlogInteraction[]
+  Comment            Comment[]
+  CommentInteraction CommentInteraction[]
+  // SavedBlogs         Blog[]
+}
+
+model Blog {
+  id               Int               @id @default(autoincrement())
+  title            String
+  subtitle         String            @default("")
+  content          String
+  thumbnailUrl     String?
+  time             DateTime          @default(now())
+  published        Boolean           @default(false)
+  author           User              @relation(fields: [authorId], references: [id])
+  authorId         Int
+  blogInteractions BlogInteraction[] // Added relation for likes/dislikes
+  comments         Comment[]
+}
+
+model Details {
+  user       User    @relation(fields: [userId], references: [id])
+  userId     Int     @id
+  name       String?
+  profession String?
+  location   String?
+  about      String?
+  profileUrl String?
+  company    String?
+  instagram  String? @default("https://instagram.com")
+  linkedin   String? @default("https://linked.com")
+  x          String? @default("https://x.com")
+}
+
+model BlogInteraction {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  blog      Blog     @relation(fields: [blogId], references: [id])
+  blogId    Int
+  isLiked   Boolean? // true for like, false for dislike
+  createdAt DateTime @default(now())
+
+  @@unique([userId, blogId]) // Ensures a user can only interact with a blog once
+}
+
+model Comment {
+  id                   Int                  @id @default(autoincrement())
+  user                 User                 @relation(fields: [userId], references: [id])
+  userId               Int
+  content              String
+  createdAt            DateTime             @default(now())
+  blog                 Blog                 @relation(fields: [blogId], references: [id])
+  blogId               Int
+  totalCommentLikes    Int                  @default(0)
+  totalCommentDislikes Int                  @default(0)
+  parent               Comment?             @relation("Replies", fields: [parentId], references: [id])
+  parentId             Int? // Nullable for top-level comments
+  replies              Comment[]            @relation("Replies")
+  interactions         CommentInteraction[]
+}
+
+model CommentInteraction {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  comment   Comment  @relation(fields: [commentId], references: [id])
+  commentId Int
+  isLiked   Boolean? // true for like, false for dislike
+  createdAt DateTime @default(now())
+
+  @@unique([userId, commentId]) // Ensures a user can only interact with a specific comment once
+}
