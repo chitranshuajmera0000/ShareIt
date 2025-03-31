@@ -24,7 +24,7 @@ export const Signup = () => {
                 .then(() => {
                     console.log("Authentication successful");
                     setShowAlert(true);
-                    setAlertMessage("You are Already Logged In . To create a new account first Logout !!! Redirecting to Blogs page...");
+                    setAlertMessage("You are Already Logged In!!! Redirecting to Blogs page...");
                     // setAlertBox(true)
                     // Success case handling
                     const timer = setTimeout(() => {
@@ -79,7 +79,7 @@ export const Signup = () => {
                         transition={{ duration: 0.3 }}
                     >
                         <div className="flex items-center justify-between">
-                            <CheckCircle size={18} className="mr-2" />
+                            <CheckCircle size={20} className="mr-2" />
                             <span>{alertMessage}</span>
                             <button
                                 className="ml-4 text-white hover:text-green-100"
