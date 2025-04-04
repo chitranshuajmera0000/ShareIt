@@ -5,7 +5,6 @@ import { BACKEND_URL } from "../config";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Tiptap from "../components/Tiptap";
-import { BlogSkeleton } from "../components/BlogSkeleton";
 import useResponsive from "../hooks";
 import MobileNavbar from "../components/navbar/MobileNavbar";
 import { motion } from "framer-motion";

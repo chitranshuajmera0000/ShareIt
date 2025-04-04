@@ -5,7 +5,6 @@ import { FullBlog } from "../components/FullBlog";
 import useResponsive, { useBlog } from "../hooks";
 import MobileNavbar from "../components/navbar/MobileNavbar";
 import { Link, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
 import axios from "axios";
 import { BACKEND_URL } from "../config";
 
@@ -13,8 +12,8 @@ export const Blog = () => {
     const { loading, blog, totalBlogLikes, totalBlogDislikes, userId } = useBlog(); // Using existing implementation
     const [fadeIn, setFadeIn] = useState(false);
     const { isMobile, isDesktop } = useResponsive();
-    const [alertMessage, setAlertMessage] = useState("");
-    const [showAlert, setShowAlert] = useState(false);
+    const [, setAlertMessage] = useState("");
+    const [, setShowAlert] = useState(false);
 
     const navigate = useNavigate();
     console.log(totalBlogLikes, totalBlogDislikes)
