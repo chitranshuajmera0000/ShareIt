@@ -117,7 +117,7 @@ This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) f
 ---
 ## 💌 Contact
 For any queries, feel free to reach out:
-📧 Email: chitranshuajmera0000@example.com  
+📧 Email: 1ms23ai014@msrit.edu  
 🌐 GitHub: [@chitranshuajmera0000](https://github.com/chitranshuajmera0000)  
 🚀 LinkedIn: [Profile](https://www.linkedin.com/in/chitranshu-ajmera-b72878297/)
 
