@@ -22,6 +22,7 @@ export interface Blog {
         id?: number;
     } | null,
     comments: blogComment[]
+    userId:number
     // Add any other properties your blog object may have
 }
 
@@ -44,7 +45,8 @@ const defaultBlog: Blog = {
         replyContent: "", interactions: [],
         user: { details: [{ profileUrl: "Error 404 ", name: "User" }] },
         content: "Error Fetching Comments", createdAt: "Error"
-    }]
+    }],
+    userId:0
 };
 
 
@@ -269,6 +271,7 @@ export const useBlog = () => {
     const [err, setErr] = useState<string>(""); // Renamed to err for consistency
     const [totalBlogLikes, setTotalBlogLikes] = useState(0);
     const [totalBlogDislikes, setTotalBlogDislikes] = useState(0);
+    const [userId , setUserId] = useState(0);
 
     useEffect(() => {
         const fetchBlog = async () => {
@@ -301,6 +304,7 @@ export const useBlog = () => {
                 console.log(response.data.blog)
                 setTotalBlogDislikes(response.data.totalBlogDislikes)
                 setBlog(blogData);
+                setUserId(response.data.userId)
                 setLoading(false);
             } catch (error) {
                 // Handle different error scenarios
@@ -334,6 +338,7 @@ export const useBlog = () => {
         totalBlogLikes,
         totalBlogDislikes,
         blog,
+        userId,
         err,
     };
 };

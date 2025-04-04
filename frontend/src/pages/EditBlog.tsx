@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import { BACKEND_URL } from '../config';
-import { Blog, useBlog, useName, } from '../hooks';
+import { Blog, useBlog, useName } from '../hooks';
 import useResponsive from '../hooks';
 import { DesktopNavbar } from '../components/navbar/DesktopNavbar';
 import MobileNavbar from '../components/navbar/MobileNavbar';
@@ -155,10 +155,8 @@ export const EditBlog: React.FC<EditBlogProps> = () => {
         navigate('/myblogs');
     };
 
-    // Check if data is fully loaded
     const isDataLoaded = !blogLoading && !detailsLoading && blog && details && blog.id && details.userId;
 
-    // Authorization and error handling
     if ((isDataLoaded && details.userId !== blog.authorId)) {
         if (!showAlert) {
             setShowAlert(true);
@@ -169,23 +167,30 @@ export const EditBlog: React.FC<EditBlogProps> = () => {
             }, 5000);
         }
         return (
-            <div className="min-h-screen bg-gradient-to-b p-2 from-slate-100 to-slate-200">
+            <motion.div className="min-h-screen bg-gradient-to-b from-blue-50 to-indigo-100 p-2">
                 <AnimatePresence>
                     {showAlert && (
                         <motion.div
-                            initial={{ opacity: 0, y: -20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -20 }}
-                            className="fixed top-24 right-4 p-4 z-50 mb-4 text-sm text-red-800 rounded-lg bg-red-50 shadow-lg"
+                            initial={{ x: 300, opacity: 0 }}
+                            animate={{ x: 0, opacity: 1 }}
+                            exit={{ x: 300, opacity: 0 }}
+                            className="fixed top-20 right-4 z-50 p-4 mb-4 text-sm rounded-lg shadow-xl bg-gradient-to-r from-red-500 to-pink-600 text-white"
+                            role="alert"
                         >
                             <div className="flex items-center justify-between">
-                                <span>{alertMessage}</span>
+                                <span className="font-semibold flex items-center">
+                                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.33-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                    </svg>
+                                    {alertMessage}
+                                </span>
                                 <button
-                                    className="ml-4 text-red-800 hover:text-red-500"
+                                    className="ml-4 text-white hover:text-gray-200"
                                     onClick={() => setShowAlert(false)}
+                                    aria-label="Close"
                                 >
-                                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
                                     </svg>
                                 </button>
                             </div>
@@ -193,227 +198,292 @@ export const EditBlog: React.FC<EditBlogProps> = () => {
                     )}
                 </AnimatePresence>
                 <EditBlogSkeleton isMobile={isMobile} isDesktop={isDesktop} />
-            </div>
+            </motion.div>
         );
     }
 
-    // Show skeleton until data is fully loaded
     if (!isDataLoaded) {
         return <EditBlogSkeleton isMobile={isMobile} isDesktop={isDesktop} />;
     }
 
     return (
-        <div className="min-h-screen bg-gradient-to-b p-2 from-slate-100 to-slate-200">
+        <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="min-h-screen bg-gradient-to-b from-blue-50 to-indigo-100 p-2"
+        >
             {isMobile ? <MobileNavbar hide="invisible" /> : <DesktopNavbar hide="invisible" />}
+            <div className="relative overflow-hidden mb-4">
+                <div className="absolute -top-24 -left-24 w-64 h-64 bg-gradient-to-r from-purple-300/30 to-indigo-300/30 rounded-full blur-3xl"></div>
+                <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-gradient-to-r from-indigo-300/30 to-blue-300/30 rounded-full blur-3xl"></div>
+                <motion.div
+                    initial={{ opacity: 0, y: -20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.7 }}
+                    className="container mx-auto px-4 pt-12 pb-2 text-center relative z-10"
+                >
+                    <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-purple-700 mb-2">
+                        Edit Your Blog
+                    </h1>
+                    <p className="text-indigo-800/70 max-w-2xl mx-auto">
+                        Refine your story
+                    </p>
+                </motion.div>
+            </div>
             <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg my-8"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ staggerChildren: 0.15 }}
+                className="max-w-4xl mx-auto px-4 py-8 relative z-10"
             >
-                <h1 className="text-3xl font-bold mb-6 text-gray-800 border-b pb-2">Edit Blog Post</h1>
-                <AnimatePresence>
-                    {error && (
-                        <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                            className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 rounded mb-4"
-                        >
-                            <div className="flex">
-                                <svg className="h-5 w-5 text-red-500" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                                </svg>
-                                <p className="ml-3 text-sm">{error}</p>
-                                <button onClick={() => setError('')} className="ml-auto text-red-500 hover:text-red-700">
-                                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                                    </svg>
-                                </button>
-                            </div>
-                        </motion.div>
-                    )}
-                    {success && (
-                        <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: 'auto' }}
-                            exit={{ opacity: 0, height: 0 }}
-                            className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 rounded mb-4"
-                        >
-                            <div className="flex">
-                                <svg className="h-5 w-5 text-green-500" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                                </svg>
-                                <p className="ml-3 text-sm">{success}</p>
-                            </div>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">
-                            Title
-                            <motion.input
-                                whileFocus={{ scale: 1.01 }}
-                                transition={{ type: 'spring', stiffness: 400 }}
-                                className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                type="text"
+                <motion.div className="bg-white rounded-xl shadow-lg overflow-visible">
+                    <AnimatePresence>
+                        {error && (
+                            <motion.div
+                                initial={{ x: 300, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                exit={{ x: 300, opacity: 0 }}
+                                className="fixed top-20 right-4 z-50 p-4 mb-4 text-sm rounded-lg shadow-xl bg-gradient-to-r from-red-500 to-pink-600 text-white"
+                            >
+                                <div className="flex items-center justify-between">
+                                    <span className="font-semibold flex items-center">
+                                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.33-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                        </svg>
+                                        {error}
+                                    </span>
+                                    <button
+                                        className="ml-4 text-white hover:text-gray-200"
+                                        onClick={() => setError('')}
+                                    >
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </motion.div>
+                        )}
+                        {success && (
+                            <motion.div
+                                initial={{ x: 300, opacity: 0 }}
+                                animate={{ x: 0, opacity: 1 }}
+                                exit={{ x: 300, opacity: 0 }}
+                                className="fixed top-20 right-4 z-50 p-4 mb-4 text-sm rounded-lg shadow-xl bg-gradient-to-r from-green-500 to-emerald-600 text-white"
+                            >
+                                <div className="flex items-center justify-between">
+                                    <span className="font-semibold flex items-center">
+                                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                                        </svg>
+                                        {success}
+                                    </span>
+                                    <button
+                                        className="ml-4 text-white hover:text-gray-200"
+                                        onClick={() => setSuccess('')}
+                                    >
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                    <form onSubmit={handleSubmit} className="flex flex-col p-6 md:p-8 space-y-6">
+                        <motion.div>
+                            <label htmlFor="title" className="block text-sm font-semibold text-gray-700 mb-1">
+                                Title <span className="text-indigo-600">*</span>
+                            </label>
+                            <input
+                                id="title"
                                 name="title"
                                 value={formData.title}
                                 onChange={handleInputChange}
-                                required
-                                placeholder="Enter a captivating title..."
-                            />
-                        </label>
-                    </div>
-                    <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">
-                            Subtitle
-                            <motion.input
-                                whileFocus={{ scale: 1.01 }}
-                                transition={{ type: 'spring', stiffness: 400 }}
-                                className="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                                 type="text"
+                                className="bg-white border border-indigo-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block p-3 w-full transition-all duration-200 shadow-sm"
+                                placeholder="Enter your blog title"
+                                required
+                            />
+                        </motion.div>
+                        <motion.div>
+                            <label htmlFor="subtitle" className="block text-sm font-semibold text-gray-700 mb-1">
+                                Subtitle <span className="text-gray-400 font-normal">(optional)</span>
+                            </label>
+                            <input
+                                id="subtitle"
                                 name="subtitle"
                                 value={formData.subtitle}
                                 onChange={handleInputChange}
-                                placeholder="Add a brief subtitle (optional)..."
+                                type="text"
+                                className="bg-white border border-indigo-300 text-gray-900 text-sm rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block p-3 w-full transition-all duration-200 shadow-sm"
+                                placeholder="Add a subtitle to provide more context"
                             />
-                        </label>
-                    </div>
-                    <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Blog Image</label>
-                        <div className="flex flex-col md:flex-row md:items-center md:space-x-6">
+                        </motion.div>
+                        <motion.div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                Thumbnail Image <span className="text-gray-400 font-normal">(optional)</span>
+                            </label>
                             <motion.div
-                                whileHover={{ scale: 1.02 }}
-                                className="relative w-full md:w-64 h-48 border-2 border-dashed border-gray-300 rounded-lg overflow-hidden bg-gray-50 mb-4 md:mb-0"
+                                whileHover={{ scale: 1.01 }}
+                                transition={{ duration: 0.2 }}
+                                className={`mt-2 p-4 border-2 border-dashed rounded-lg ${imagePreview ? "border-indigo-300 bg-indigo-50" : "border-gray-300 bg-gray-50"}`}
                             >
-                                {imagePreview ? (
-                                    <img src={imagePreview} alt="Blog thumbnail" className="w-full h-full object-cover" />
-                                ) : (
-                                    <div className="w-full h-full flex items-center justify-center text-gray-400">
-                                        <svg className="w-12 h-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                        </svg>
-                                        <span className="ml-2">No image selected</span>
+                                <div className="flex flex-col sm:flex-row items-center gap-6">
+                                    <div className={`relative w-40 h-40 overflow-hidden rounded-lg ${imagePreview ? "bg-white shadow-md" : "bg-gray-100"}`}>
+                                        {imagePreview ? (
+                                            <motion.img
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: 1 }}
+                                                src={imagePreview}
+                                                alt="Blog thumbnail"
+                                                className="w-full h-full object-cover"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full flex flex-col items-center justify-center text-gray-400 p-4">
+                                                <svg className="h-12 w-12 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                </svg>
+                                                <p className="text-center text-sm">No image selected</p>
+                                            </div>
+                                        )}
+                                        {uploadingImage && (
+                                            <motion.div
+                                                initial={{ opacity: 0 }}
+                                                animate={{ opacity: 1 }}
+                                                className="absolute inset-0 bg-indigo-800 bg-opacity-60 flex items-center justify-center"
+                                            >
+                                                <svg className="animate-spin h-10 w-10 text-white" viewBox="0 0 24 24" fill="none">
+                                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                                </svg>
+                                            </motion.div>
+                                        )}
                                     </div>
-                                )}
-                                {uploadingImage && (
-                                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                                        <div className="loader ease-linear rounded-full border-4 border-t-4 border-gray-200 h-12 w-12 mb-4 border-t-blue-500 animate-spin"></div>
+                                    <div className="flex flex-col items-stretch justify-center gap-3 w-full sm:w-auto">
+                                        <div className="text-center sm:text-left mb-2">
+                                            <p className="text-sm text-gray-600">Drag and drop an image here, or click to select a file</p>
+                                            <p className="text-xs text-gray-500 mt-1">Recommended size: 1200 x 630px. Max 5MB.</p>
+                                        </div>
+                                        <motion.button
+                                            whileHover={{ scale: 1.05 }}
+                                            whileTap={{ scale: 0.95 }}
+                                            type="button"
+                                            onClick={() => fileInputRef.current?.click()}
+                                            disabled={uploadingImage}
+                                            className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-md shadow-md text-sm font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50 transition-all duration-200"
+                                        >
+                                            {uploadingImage ? 'Uploading...' : imagePreview ? 'Change Image' : 'Choose Image'}
+                                        </motion.button>
+                                        {imagePreview && (
+                                            <motion.button
+                                                whileHover={{ scale: 1.05 }}
+                                                whileTap={{ scale: 0.95 }}
+                                                type="button"
+                                                onClick={() => {
+                                                    setImagePreview('');
+                                                    setFormData(prev => ({ ...prev, thumbnailUrl: '' }));
+                                                    setUnsavedChanges(true);
+                                                }}
+                                                className="px-4 py-2 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-md shadow-md text-sm font-medium focus:outline-none transition-all duration-200"
+                                            >
+                                                Remove Image
+                                            </motion.button>
+                                        )}
+                                        <input
+                                            ref={fileInputRef}
+                                            type="file"
+                                            accept="image/*"
+                                            onChange={handleImageChange}
+                                            className="hidden"
+                                        />
                                     </div>
-                                )}
+                                </div>
                             </motion.div>
-                            <div className="flex flex-col space-y-3">
-                                <motion.button
-                                    whileHover={{ scale: 1.05 }}
-                                    whileTap={{ scale: 0.95 }}
-                                    type="button"
-                                    onClick={() => fileInputRef.current?.click()}
-                                    className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                                    disabled={uploadingImage}
-                                >
-                                    {uploadingImage ? 'Uploading...' : imagePreview ? 'Change Image' : 'Choose Image'}
-                                </motion.button>
-                                {imagePreview && (
-                                    <motion.button
-                                        whileHover={{ scale: 1.05 }}
-                                        whileTap={{ scale: 0.95 }}
-                                        type="button"
-                                        onClick={() => {
-                                            setImagePreview('');
-                                            setFormData(prev => ({ ...prev, thumbnailUrl: '' }));
-                                            setUnsavedChanges(true);
-                                        }}
-                                        className="px-4 py-2 border border-red-300 rounded-md shadow-sm text-sm font-medium text-red-700 bg-white hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-                                        disabled={uploadingImage}
-                                    >
-                                        Remove Image
-                                    </motion.button>
-                                )}
-                                <p className="text-xs text-gray-500 mt-2">
-                                    Recommended: 1200×630px (16:9 ratio)<br />
-                                    Maximum size: 5MB
-                                </p>
-                                <input
-                                    ref={fileInputRef}
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={handleImageChange}
-                                    className="hidden"
-                                />
+                        </motion.div>
+                        <motion.div>
+                            <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                Content <span className="text-indigo-600">*</span>
+                            </label>
+                            <div className="border border-indigo-300 rounded-lg overflow-visible shadow-sm">
+                                <Tiptap size={48} onChange={handleContentChange} initialContent={formData.content} />
                             </div>
-                        </div>
-                    </div>
-                    <div className="space-y-2">
-                        <label className="block text-sm font-medium text-gray-700">Content</label>
-                        <div className="border border-gray-300 rounded-md overflow-hidden">
-                            <Tiptap size={0} onChange={handleContentChange} initialContent={formData.content} />
-                        </div>
-                        <div className="flex justify-end text-xs text-gray-500">
-                            {wordCount} words | {charCount} characters
-                        </div>
-                    </div>
-                    <div className="flex flex-wrap gap-4 pt-4 border-t">
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            type="submit"
-                            disabled={isSubmitting}
-                            className={`px-6 py-3 rounded-md text-white font-medium ${isSubmitting ? 'bg-blue-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700 shadow-md hover:shadow-lg'}`}
-                        >
-                            {isSubmitting ? (
-                                <span className="flex items-center">
-                                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            <div className="flex justify-end text-xs text-gray-500 mt-1">
+                                {wordCount} words | {charCount} characters
+                            </div>
+                        </motion.div>
+                        <motion.div className="flex justify-center py-6 px-8 gap-4 bg-gradient-to-r from-gray-50 to-gray-100 border-t border-gray-200">
+                            <motion.button
+                                whileHover={{ scale: 1.05, boxShadow: "0 10px 15px -3px rgba(79, 70, 229, 0.2)" }}
+                                whileTap={{ scale: 0.95 }}
+                                type="submit"
+                                disabled={isSubmitting}
+                                className="inline-flex items-center px-6 py-3 text-md font-medium text-white bg-gradient-to-r from-indigo-600 to-purple-600 rounded-lg shadow-md hover:from-indigo-700 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                            >
+                                {isSubmitting ? (
+                                    <span className="flex items-center">
+                                        <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24" fill="none">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                        </svg>
+                                        Saving...
+                                    </span>
+                                ) : (
+                                    'Save Changes'
+                                )}
+                            </motion.button>
+                            <motion.button
+                                whileHover={{ scale: 1.05, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
+                                whileTap={{ scale: 0.95 }}
+                                type="button"
+                                disabled={isDeleting}
+                                onClick={() => setShowDeleteConfirm(true)}
+                                className="inline-flex items-center px-6 py-3 text-md font-medium text-white bg-gradient-to-r from-red-600 to-pink-600 rounded-lg shadow-md hover:from-red-700 hover:to-pink-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
+                            >
+                                {isDeleting ? (
+                                    <span className="flex items-center">
+                                        <svg className="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24" fill="none">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                        </svg>
+                                        Deleting...
+                                    </span>
+                                ) : (
+                                    'Delete Blog'
+                                )}
+                            </motion.button>
+                            <motion.button
+                                whileHover={{ scale: 1.05, boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)" }}
+                                whileTap={{ scale: 0.95 }}
+                                type="button"
+                                onClick={handleCancel}
+                                className="inline-flex items-center px-6 py-3 text-md font-medium text-gray-700 bg-white rounded-lg shadow-md hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 border border-gray-300"
+                            >
+                                Cancel
+                            </motion.button>
+                            {unsavedChanges && (
+                                <span className="text-amber-600 text-sm italic flex items-center ml-auto">
+                                    <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                                     </svg>
-                                    Saving...
+                                    Unsaved changes
                                 </span>
-                            ) : (
-                                'Save Changes'
                             )}
-                        </motion.button>
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            type="button"
-                            disabled={isDeleting}
-                            onClick={() => setShowDeleteConfirm(true)}
-                            className={`px-6 py-3 rounded-md text-white font-medium ${isDeleting ? 'bg-red-400 cursor-not-allowed' : 'bg-red-600 hover:bg-red-700 shadow-md hover:shadow-lg'}`}
-                        >
-                            {isDeleting ? (
-                                <span className="flex items-center">
-                                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                    Deleting...
-                                </span>
-                            ) : (
-                                'Delete Blog'
-                            )}
-                        </motion.button>
-                        <motion.button
-                            whileHover={{ scale: 1.05 }}
-                            whileTap={{ scale: 0.95 }}
-                            type="button"
-                            onClick={handleCancel}
-                            className="px-6 py-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50"
-                        >
-                            Cancel
-                        </motion.button>
-                        {unsavedChanges && (
-                            <span className="text-amber-600 text-sm italic flex items-center ml-auto">
-                                <svg className="w-4 h-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                </svg>
-                                Unsaved changes
-                            </span>
-                        )}
-                    </div>
-                </form>
+                        </motion.div>
+                    </form>
+                </motion.div>
             </motion.div>
+            <div className="mt-16 relative">
+                <div className="w-full h-24 bg-indigo-600/10"></div>
+                <div className="absolute bottom-0 left-0 w-full overflow-hidden">
+                    <svg className="relative block w-full h-10 text-indigo-600/10" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                        <path
+                            d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z"
+                            fill="currentColor"
+                        ></path>
+                    </svg>
+                </div>
+            </div>
             <AnimatePresence>
                 {showDeleteConfirm && (
                     <motion.div
@@ -437,7 +507,7 @@ export const EditBlog: React.FC<EditBlogProps> = () => {
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     onClick={() => setShowDeleteConfirm(false)}
-                                    className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                                    className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 transition-all duration-200"
                                 >
                                     Cancel
                                 </motion.button>
@@ -445,7 +515,7 @@ export const EditBlog: React.FC<EditBlogProps> = () => {
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                     onClick={handleDelete}
-                                    className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                                    className="px-4 py-2 bg-gradient-to-r from-red-600 to-pink-600 text-white rounded-md hover:from-red-700 hover:to-pink-700 transition-all duration-200"
                                 >
                                     Delete
                                 </motion.button>
@@ -454,14 +524,13 @@ export const EditBlog: React.FC<EditBlogProps> = () => {
                     </motion.div>
                 )}
             </AnimatePresence>
-        </div>
+        </motion.div>
     );
 };
 
 export const EditBlogSkeleton = ({ isMobile }: { isMobile: boolean; isDesktop: boolean }) => {
     return (
-        <div className="min-h-screen bg-gradient-to-b p-2 from-slate-100 to-slate-200">
-            {/* Navbar Skeleton */}
+        <div className="min-h-screen bg-gradient-to-b from-blue-50 to-indigo-100 p-2">
             {isMobile ? (
                 <div className="p-2">
                     <div className="w-full h-12 bg-gray-200 rounded-md animate-pulse" />
@@ -471,24 +540,27 @@ export const EditBlogSkeleton = ({ isMobile }: { isMobile: boolean; isDesktop: b
                     <div className="w-full h-16 bg-gray-200 rounded-md animate-pulse" />
                 </div>
             )}
-
-            {/* Main Content Skeleton */}
-            <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-lg my-8">
-                <div className="w-48 h-8 bg-gray-200 rounded-md mb-6 animate-pulse" />
-                <div className="space-y-6">
+            <div className="relative overflow-hidden mb-4">
+                <div className="container mx-auto px-4 pt-12 pb-2 text-center">
+                    <div className="w-48 h-8 bg-gray-200 rounded-md mb-2 mx-auto animate-pulse" />
+                    <div className="w-64 h-4 bg-gray-200 rounded mx-auto animate-pulse" />
+                </div>
+            </div>
+            <div className="max-w-4xl mx-auto px-4 py-8">
+                <div className="bg-white rounded-xl shadow-lg p-6 md:p-8 space-y-6">
                     <div className="space-y-2">
                         <div className="w-16 h-4 bg-gray-200 rounded animate-pulse" />
-                        <div className="w-full h-10 bg-gray-200 rounded-md animate-pulse" />
+                        <div className="w-full h-10 bg-gray-200 rounded-lg animate-pulse" />
                     </div>
                     <div className="space-y-2">
                         <div className="w-20 h-4 bg-gray-200 rounded animate-pulse" />
-                        <div className="w-full h-10 bg-gray-200 rounded-md animate-pulse" />
+                        <div className="w-full h-10 bg-gray-200 rounded-lg animate-pulse" />
                     </div>
                     <div className="space-y-2">
                         <div className="w-24 h-4 bg-gray-200 rounded animate-pulse" />
-                        <div className="flex flex-col md:flex-row md:items-center space-y-4 md:space-y-0 md:space-x-6">
-                            <div className="w-full md:w-64 h-48 bg-gray-200 rounded-lg animate-pulse" />
-                            <div className="space-y-3">
+                        <div className="flex flex-col sm:flex-row items-center gap-6">
+                            <div className="w-40 h-40 bg-gray-200 rounded-lg animate-pulse" />
+                            <div className="flex flex-col gap-3 w-full sm:w-auto">
                                 <div className="w-32 h-10 bg-gray-200 rounded-md animate-pulse" />
                                 <div className="w-32 h-10 bg-gray-200 rounded-md animate-pulse" />
                                 <div className="w-40 h-4 bg-gray-200 rounded animate-pulse" />
@@ -497,16 +569,16 @@ export const EditBlogSkeleton = ({ isMobile }: { isMobile: boolean; isDesktop: b
                     </div>
                     <div className="space-y-2">
                         <div className="w-20 h-4 bg-gray-200 rounded animate-pulse" />
-                        <div className="w-full h-64 bg-gray-200 rounded-md animate-pulse" />
+                        <div className="w-full h-64 bg-gray-200 rounded-lg animate-pulse" />
                         <div className="flex justify-end space-x-2">
                             <div className="w-20 h-3 bg-gray-200 rounded animate-pulse" />
                             <div className="w-24 h-3 bg-gray-200 rounded animate-pulse" />
                         </div>
                     </div>
-                    <div className="flex flex-wrap gap-4 pt-4 border-t">
-                        <div className="w-36 h-12 bg-gray-200 rounded-md animate-pulse" />
-                        <div className="w-36 h-12 bg-gray-200 rounded-md animate-pulse" />
-                        <div className="w-28 h-12 bg-gray-200 rounded-md animate-pulse" />
+                    <div className="flex justify-center gap-4 py-6 bg-gradient-to-r from-gray-50 to-gray-100 border-t border-gray-200">
+                        <div className="w-36 h-12 bg-gray-200 rounded-lg animate-pulse" />
+                        <div className="w-36 h-12 bg-gray-200 rounded-lg animate-pulse" />
+                        <div className="w-28 h-12 bg-gray-200 rounded-lg animate-pulse" />
                     </div>
                 </div>
             </div>

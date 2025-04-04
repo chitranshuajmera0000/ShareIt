@@ -9,7 +9,7 @@ export const Blogs = () => {
     const [searchParams] = useSearchParams();
     let filter = searchParams.get("filter") || "";
     // const [limit, setLimit] = useState(6);
-    let limit =6;
+    let limit = 6;
     const [page, setPage] = useState(1);
     const { loading, blogs, pageLoading } = useBlogs();
 
@@ -74,27 +74,128 @@ export const Blogs = () => {
         }
     }, [navigate, page, filter, filteredTotalPages]);
 
-    // Define blog categories with associated colors
-    const categoryColors = {
+    // Define the category type
+    type Category =
+        | "General"
+        | "tech"
+        | "health"
+        | "finance"
+        | "lifestyle"
+        | "travel"
+        | "food"
+        | "politics"
+        | "education"
+        | "sports"
+        | "entertainment"
+        | "career"; // Added "career" category for this type of content
+
+    // Type the categoryColors object
+    const categoryColors: Record<Category, { bg: string; text: string }> = {
         General: { bg: "from-purple-500 to-indigo-600", text: "text-indigo-100" },
         tech: { bg: "from-blue-500 to-cyan-600", text: "text-blue-100" },
         health: { bg: "from-green-500 to-emerald-600", text: "text-green-100" },
         finance: { bg: "from-yellow-500 to-amber-600", text: "text-yellow-100" },
         lifestyle: { bg: "from-pink-500 to-rose-600", text: "text-pink-100" },
         travel: { bg: "from-orange-500 to-red-600", text: "text-orange-100" },
+        food: { bg: "from-red-500 to-orange-600", text: "text-red-100" },
+        politics: { bg: "from-gray-600 to-gray-800", text: "text-gray-100" },
+        education: { bg: "from-teal-500 to-teal-700", text: "text-teal-100" },
+        sports: { bg: "from-lime-500 to-green-600", text: "text-lime-100" },
+        entertainment: { bg: "from-fuchsia-500 to-purple-600", text: "text-fuchsia-100" },
+        career: { bg: "from-indigo-500 to-blue-700", text: "text-indigo-100" }, // New career category color
     };
 
-    // Helper function to determine blog category based on content
-    const getBlogCategory = (blog: Blog) => {
-        const content = blog.title.toLowerCase() + " " + blog.content.toLowerCase();
-        if (content.includes("tech") || content.includes("software") || content.includes("code")) return "tech";
-        if (content.includes("health") || content.includes("fitness") || content.includes("wellness")) return "health";
-        if (content.includes("money") || content.includes("finance") || content.includes("investment")) return "finance";
-        if (content.includes("lifestyle") || content.includes("fashion") || content.includes("food")) return "lifestyle";
-        if (content.includes("travel") || content.includes("vacation") || content.includes("journey")) return "travel";
-        return "General";
+    
+
+    // Update getBlogCategory to return the Category type
+    const getBlogCategory = (blog: Blog): Category => {
+        const title = blog.title.toLowerCase();
+        const content = blog.content.toLowerCase();
+        console.log("Title:", title);
+        console.log("Content excerpt:", content.slice(0, 200) + "...");
+
+        const categoryKeywords: Record<string, string[]> = {
+            tech: [
+                "tech", "technology", "software", "code", "coding", "programming", "developer",
+                "app", "web", "ai", "artificial intelligence", "machine learning", "gadget", "device"
+            ],
+            health: [
+                "health", "fitness", "wellness", "exercise", "diet", "nutrition", "medicine",
+                "mental health", "workout", "yoga", "therapy", "disease", "doctor", "hospital"
+            ],
+            finance: [
+                "money", "finance", "investment", "budget", "economy", "stocks", "trading",
+                "bank", "savings", "wealth", "financial", "crypto", "cryptocurrency", "loan"
+            ],
+            lifestyle: [
+                "lifestyle", "fashion", "style", "beauty", "home", "decor", "relationship",
+                "hobby", "culture", "trend", "daily life", "self-care", "minimalism"
+            ],
+            travel: [
+                "travel", "vacation", "journey", "trip", "destination", "adventure", "tourism",
+                "explore", "flight", "hotel", "backpacking", "culture", "road trip", "wanderlust"
+            ],
+            food: [
+                "food", "recipe", "cooking", "cuisine", "meal", "restaurant", "chef",
+                "baking", "dining", "gourmet", "nutrition", "diet", "flavor", "ingredient"
+            ],
+            politics: [
+                "politics", "government", "election", "policy", "law", "democracy", "vote",
+                "politician", "campaign", "legislation", "rights", "justice", "debate", "news"
+            ],
+            education: [
+                "education", "learning", "school", "study", "teacher", "student", "course",
+                "knowledge", "university", "training", "research", "science", "exam", "lecture"
+            ],
+            sports: [
+                "sports", "athlete", "team", "match", "competition", "tournament", "player",
+                "coach", "league", "score", "game" // "game" is less weighted here
+            ],
+            entertainment: [
+                "entertainment", "movie", "music", "tv", "show", "celebrity", "film",
+                "concert", "performance", "streaming", "actor", "song", "theater"
+            ],
+            career: [ // New category for career-related content
+                "career", "job", "hiring", "portfolio", "interview", "recruiter", "application",
+                "layoff", "business", "design", "designer", "work", "employment", "metrics", "strategy"
+            ]
+        };
+
+        // Calculate scores with title weighted more heavily (e.g., 2x)
+        const categoryScores: Record<string, number> = {};
+
+        for (const [category, keywords] of Object.entries(categoryKeywords)) {
+            categoryScores[category] = keywords.reduce((score, keyword) => {
+                const regex = new RegExp(`\\b${keyword}\\b`, "g");
+                const titleMatches = (title.match(regex) || []).length * 2; // Double weight for title
+                const contentMatches = (content.match(regex) || []).length;
+                return score + titleMatches + contentMatches;
+            }, 0);
+        }
+
+        // Find the best category
+        let maxScore = 0;
+        let bestCategory: Category = "General";
+
+        for (const [category, score] of Object.entries(categoryScores)) {
+            if (score > maxScore) {
+                maxScore = score;
+                bestCategory = category as Category;
+            }
+        }
+
+        // If the max score is too low (e.g., < 2), default to General
+        if (maxScore < 2) {
+            bestCategory = "General";
+        }
+
+        console.log("Category scores:", categoryScores);
+        console.log("Selected category:", bestCategory);
+
+        return bestCategory;
     };
 
+    
     function BlogCard({ post }: { post: Blog }) {
         let readTime = Math.ceil(post.content.length / 500);
         let readTimeText = '';
@@ -116,7 +217,7 @@ export const Blogs = () => {
             } else if (minutes === 60) {
                 readTimeText = `${hours + 1} hour read`;
             } else {
-                readTimeText = `${hours} hour ${minutes} min read`;
+                readTimeText = `${hours} hour+ read`;
             }
         }
 

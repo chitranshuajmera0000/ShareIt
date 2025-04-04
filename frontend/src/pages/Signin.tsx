@@ -130,8 +130,11 @@ function SigninAuth() {
             if (error.response) {
                 if (error.response.status === 411 || error.response.status === 403) {
                     setErrorMessage("Invalid username or password. Please try again.");
-                } else {
-                    setErrorMessage(`Error: ${error.response.data.message || "Unexpected error occurred"}`);
+                } else if(error.response.status === 409 ){
+                    setErrorMessage(`Error: ${error.response.data.message || "User Already Exits"}`);
+                }
+                else{
+                    setErrorMessage(`Error: ${error.response.data.message || "Unexpected Error Occured"}`);
                 }
             } else {
                 setErrorMessage("Network error. Please check your connection.");

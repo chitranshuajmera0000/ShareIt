@@ -2,8 +2,8 @@ import { Hono } from "hono";
 import { PrismaClient } from '@prisma/client/edge'
 import { withAccelerate } from "@prisma/extension-accelerate";
 import { decode, verify } from "hono/jwt";
-import { createBlogInput, createCommentInput, updateBlogInput } from "@beginnerdev/common";
-import axios from "axios";
+import { createBlogInput, createCommentInput, updateBlogInput, updateCommentInput } from "@beginnerdev/common";
+// import axios from "axios";
 import { useState } from "hono/jsx";
 
 
@@ -305,6 +305,41 @@ blogRouter.put('/comment/like', async (c) => {
     }
 });
 
+blogRouter.put('/comment/:id', async (c) => {
+    const Id = c.req.param("id");
+    const body = await c.req.json();
+    const { success } = updateCommentInput.safeParse(body);
+    console.log(Id);
+    if (!success) {
+        c.status(411)
+        return c.json({
+            message: "Incorrect Inputs"
+        })
+    }
+    const prisma = new PrismaClient({
+        datasourceUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate())
+    const userID = c.get("userID")
+    const editComment = await prisma.comment.update({
+        where: {
+            id: Number(Id),
+            userId: userID
+        },
+        data: {
+            content: body.editComment
+        }
+
+    })
+    const comment = await prisma.comment.findUnique({
+        where: {
+            id: Number(Id),
+            userId: userID
+        }
+
+    })
+    c.status(200);
+    return c.json({ comment })
+})
 
 
 
@@ -542,7 +577,7 @@ blogRouter.get('/:id', async (c) => {
 
         })
 
-        return c.json({ blog, totalBlogLikes, totalBlogDislikes })
+        return c.json({ blog, totalBlogLikes, totalBlogDislikes, userId })
     } catch (e) {
         c.status(404)
         return c.json({ Error: "Blog Cannot Be Found !!" })
@@ -551,28 +586,107 @@ blogRouter.get('/:id', async (c) => {
 )
 
 blogRouter.delete('/:id', async (c) => {
-    const id = c.req.param("id");
+    const id = Number(c.req.param("id")); // Convert id to number
+    const userId = c.get("userID"); // User making the request
 
     const prisma = new PrismaClient({
         datasourceUrl: c.env.DATABASE_URL,
-    }).$extends(withAccelerate())
+    }).$extends(withAccelerate());
+
     try {
-        const blog = await prisma.blog.delete({
-            where: {
-                id: Number(id)
-            }
+        // Fetch the blog first to check ownership
+        const blog = await prisma.blog.findUnique({
+            where: { id },
+            select: { authorId: true },
+        });
 
-        })
+        if (!blog) {
+            c.status(404);
+            return c.json({ error: "Blog not found!" });
+        }
+
+        // Ensure the current user is the author of the blog
+        if (blog.authorId !== userId) {
+            c.status(403);
+            return c.json({ error: "You are not authorized to delete this blog!" });
+        }
+
+        // Perform deletion inside a transaction to maintain consistency
+        await prisma.$transaction([
+            prisma.blogInteraction.deleteMany({ where: { blogId: id } }),
+            prisma.commentInteraction.deleteMany({
+                where: {
+                    comment: { blogId: id },
+                },
+            }),
+            prisma.comment.deleteMany({ where: { blogId: id } }),
+            prisma.blog.delete({ where: { id } }),
+        ]);
+
         c.status(200);
-        return c.json("Blog Deleted Successfully ");
+        return c.json({ message: "Blog deleted successfully" });
+
     } catch (e) {
-        c.status(400);
-        return c.json({ Error: 'Error Deleting The Blog !!!' })
+        console.error("Error deleting blog:", e);
+        c.status(500);
+        return c.json({ error: "An error occurred while deleting the blog!" });
+    } finally {
+        await prisma.$disconnect();
     }
-})
+});
 
+blogRouter.delete('/comment/:id', async (c) => {
+    const id = Number(c.req.param("id")); // Convert id to number
+    const userId = c.get("userID"); // User making the request
 
+    const prisma = new PrismaClient({
+        datasourceUrl: c.env.DATABASE_URL,
+    }).$extends(withAccelerate());
 
+    try {
+        // Fetch the comment first to check ownership
+        const comment = await prisma.comment.findUnique({
+            where: { id },
+            select: { userId: true },
+        });
+
+        if (!comment) {
+            c.status(404);
+            return c.json({ error: "Reply not found!" });
+        }
+
+        // Ensure the current user is the author of the blog
+        if (comment.userId !== userId) {
+            c.status(403);
+            return c.json({ error: "You are not authorized to delete this reply!" });
+        }
+
+        // Perform deletion inside a transaction to maintain consistency
+        await prisma.$transaction([
+            prisma.commentInteraction.deleteMany({
+                where: {
+                    comment: { id },
+                },
+            }),
+            prisma.comment.deleteMany({
+                where:{
+                    parentId:id
+                }
+            }),
+            prisma.comment.delete({ where: { id, userId } }),
+        ]);
+
+        c.status(200);
+        return c.json({ message: "Comment deleted successfully", comment });
+
+    } catch (e) {
+        console.error("Error deleting blog:", e);
+        c.status(500);
+        return c.json({ error: "An error occurred while deleting the comment!" });
+    } finally {
+        await prisma.$disconnect();
+    }
+});
 
 blogRouter.post('/comment/:id', async (c) => {
     const id = c.req.param("id");

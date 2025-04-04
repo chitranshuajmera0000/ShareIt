@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Blog, blogComment, formatDate } from "../hooks";
-import {  useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import HTMLRenderer from "./Htmlrenderer";
 import { HandThumbUpIcon as HandThumbUpOutline, HandThumbDownIcon as HandThumbDownOutline, } from '@heroicons/react/24/outline';
 import { HandThumbUpIcon as HandThumbUpSolid, HandThumbDownIcon as HandThumbDownSolid, ChevronDownIcon, ChevronUpIcon } from '@heroicons/react/24/solid';
@@ -18,16 +18,25 @@ const renderComments = (
     toggleReplyInput: any,
     updateReplyContent: any,
     handleReply: any,
-    isLoading: boolean
+    userId: number,
+    handleEditComment: (
+        commentId: number,
+        content: string,
+        setIsEditCommentLoading: (loading: boolean) => void
+    ) => void,
+    handleDeleteComment: (commentId: number, setIsDeleteCommentLoading: (loading: boolean) => void) => void,// New prop,
 ) => {
-    // Organize comments into a parent-child structure
+    // Organize comments into a parent-child structure with user comments first
     const organizeComments = (commentsList: blogComment[]) => {
         const commentMap = new Map<number, blogComment & { children: blogComment[] }>();
         commentsList.forEach(comment => {
             commentMap.set(comment.id, { ...comment, children: [] });
         });
 
-        const topLevelComments: blogComment[] = [];
+        const userComments: blogComment[] = [];
+        const otherComments: blogComment[] = [];
+
+        // Separate user comments from others
         commentsList.forEach(comment => {
             if (comment.parentId) {
                 const parentComment = commentMap.get(comment.parentId);
@@ -35,15 +44,32 @@ const renderComments = (
                     parentComment.children.push(commentMap.get(comment.id) as blogComment);
                 }
             } else {
-                topLevelComments.push(commentMap.get(comment.id) as blogComment);
+                if (comment.userId === userId) {
+                    userComments.push(commentMap.get(comment.id) as blogComment);
+                } else {
+                    otherComments.push(commentMap.get(comment.id) as blogComment);
+                }
             }
         });
 
-        return topLevelComments;
+        // Sort children of each comment to put user's replies first
+        commentMap.forEach(comment => {
+            comment.children.sort((a, b) =>
+                a.userId === userId && b.userId !== userId ? -1 :
+                    b.userId === userId && a.userId !== userId ? 1 : 0
+            );
+        });
+
+        return [...userComments, ...otherComments];
     };
 
     const [expandedReplies, setExpandedReplies] = useState<Record<number, boolean>>({});
-    const [isReplyLoading, setIsReplyLoading] = useState(isLoading);
+    const [isReplyLoading, setIsReplyLoading] = useState(false);
+    const [isEditCommentLoading, setIsEditCommentLoading] = useState(false);
+    const [deleteLoadingStates, setDeleteLoadingStates] = useState<Record<number, boolean>>({}); // Per-comment loading state  
+    const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+    const [editContent, setEditContent] = useState<string>("");
+    const editAreaRefs = useRef<Map<number, HTMLTextAreaElement>>(new Map()); // Single ref for all textareas
     const MAX_CONTENT_LENGTH = 150;
     const [expandedComments, setExpandedComments] = useState<Record<number, boolean>>({});
 
@@ -61,7 +87,44 @@ const renderComments = (
         }));
     };
 
+    const startEditing = (commentId: number, content: string) => {
+        setEditingCommentId(commentId);
+        setEditContent(content);
+    };
+
+    const cancelEditing = (loading: boolean) => {
+        if (loading) {
+
+            setEditingCommentId(null);
+            setEditContent("");
+        }
+    };
+
+    const handleDeleteC = (commentId: number) => {
+        const setLoadingForComment = (loading: boolean) => {
+            setDeleteLoadingStates(prev => ({
+                ...prev,
+                [commentId]: loading
+            }));
+        };
+        handleDeleteComment(commentId, setLoadingForComment);
+    };
+    const adjustHeight = (commentId: number) => {
+        const textarea = editAreaRefs.current.get(commentId);
+        if (textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = `${textarea.scrollHeight}px`;
+        }
+    };
+
+    useEffect(() => {
+        if (editingCommentId !== null) {
+            adjustHeight(editingCommentId); // Adjust height when editing starts or content changes
+        }
+    }, [editContent, editingCommentId]);
+
     const topLevelComments = organizeComments(comments);
+
 
     const renderCommentTree = (commentList: (blogComment & { children?: blogComment[] })[], depth = 0) => (
         <div className={`mt-2 ${depth > 0 ? 'ml-4' : ''}`}>
@@ -84,6 +147,11 @@ const renderComments = (
                         const truncatedContent = comment.content.length > MAX_CONTENT_LENGTH && !isCommentExpanded
                             ? comment.content.slice(0, MAX_CONTENT_LENGTH) + "..."
                             : comment.content;
+                        const isEditing = editingCommentId === comment.id;
+                        const isDeleting = deleteLoadingStates[comment.id] || false; // Specific to this comment
+
+
+
 
                         return (
                             <motion.div
@@ -103,65 +171,150 @@ const renderComments = (
                                     />
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center justify-between">
-                                            <span className="font-semibold text-gray-800 truncate text-sm">
-                                                {comment.user.details[0].name}
-                                            </span>
-                                            <span className="text-xs text-gray-500 flex-shrink-0">
-                                                {formatDate(comment.createdAt)}
-                                            </span>
+                                            <div>
+                                                <span className="font-semibold text-gray-800 truncate text-sm">
+                                                    {comment.userId === userId ? "You" : comment.user.details[0].name}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-4">
+                                                <span className="text-xs text-gray-500 flex-shrink-0 ">
+                                                    {formatDate(comment.createdAt)}
+                                                </span>
+                                                {comment.userId === userId && !isEditing && (
+                                                    <div className="flex gap-2">
+                                                        <button
+                                                            onClick={() => startEditing(comment.id, comment.content)}
+                                                            className="text-gray-600 hover:text-blue-500 text-xs"
+                                                        >
+                                                            <div className="flex  items-center ">
+                                                                <motion.img
+                                                                    whileHover={{ scale: 1.1 }}
+                                                                    src="https://res.cloudinary.com/dxj9gigbq/image/upload/v1742580763/edit_yck5vm.png"
+                                                                    className="h-5 w-5 cursor-pointer"
+                                                                    alt="Edit"
+                                                                />
+                                                            </div>
+                                                        </button>
+                                                        <button
+                                                            onClick={() => handleDeleteC(comment.id)}
+                                                            className="text-gray-600 hover:text-red-500 text-xs"
+                                                        >
+                                                            {isDeleting ? (
+                                                                <LoaderCircleIcon className="animate-spin w-4 h-4" />
+                                                            ) : (
+                                                                <div className="flex  items-center ">
+                                                                <motion.img
+                                                                    whileHover={{ scale: 1.1 }}
+                                                                    src="https://res.cloudinary.com/dxj9gigbq/image/upload/v1743711285/trash_1_yj6d5p.png"
+                                                                    className="h-5 w-5 cursor-pointer"
+                                                                    alt="Delete"
+                                                                />
+                                                            </div>
+                                                            )}
+                                                        </button>
+                                                    </div>
+                                                )}
+                                            </div>
                                         </div>
-                                        <p className="text-gray-700 mt-1 text-sm break-words">
-                                            {truncatedContent}
-                                            {comment.content.length > MAX_CONTENT_LENGTH && (
+                                        {isEditing ? (
+                                            <div className="mt-2 flex gap-2">
+                                                {/* <input
+                                                    value={editContent}
+                                                    onChange={(e) => { adjustHeight; setEditContent(e.target.value) }}
+                                                    className="flex-1 bg-gray-50 p-1 rounded-lg border border-gray-200 text-sm"
+                                                /> */}
+                                                <textarea
+                                                    onChange={(e) => {
+                                                        setEditContent(e.target.value);
+                                                        adjustHeight(comment.id);
+                                                    }}
+                                                    value={editContent}
+                                                    ref={(el) => {
+                                                        if (el) editAreaRefs.current.set(comment.id, el);
+                                                        else editAreaRefs.current.delete(comment.id);
+                                                    }}
+                                                    className="flex-1 bg-gray-50 p-2.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 placeholder-gray-400 text-sm block w-full resize-none overflow-hidden"
+                                                    placeholder="Edit your Comment..."
+                                                    rows={5}
+                                                />
                                                 <button
-                                                    onClick={() => toggleExpandComment(comment.id)}
-                                                    className="text-blue-500 text-xs font-medium ml-1"
+                                                    onClick={() => {
+                                                        handleEditComment(comment.id, editContent, setIsEditCommentLoading);
+                                                        setTimeout(() => {
+                                                            cancelEditing(!isEditCommentLoading);
+                                                        }, 2000)
+                                                    }}
+                                                    className="bg-blue-500 text-white px-2 py-1 h-12 rounded-lg text-sm"
                                                 >
-                                                    {isCommentExpanded ? "Show Less" : "Show More"}
+                                                    {isEditCommentLoading ? (
+                                                        <LoaderCircleIcon className="animate-spin" />
+                                                    ) : (
+                                                        "Save"
+                                                    )}
                                                 </button>
-                                            )}
-                                        </p>
+                                                <button
+                                                    onClick={() => { cancelEditing(true) }}
+                                                    className="bg-gray-500 text-white px-2 py-1 h-12 rounded-lg text-sm"
+                                                >
+                                                    Cancel
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <p className="text-gray-700 mt-1 text-sm break-words">
+                                                {truncatedContent}
+                                                {comment.content.length > MAX_CONTENT_LENGTH && (
+                                                    <button
+                                                        onClick={() => toggleExpandComment(comment.id)}
+                                                        className="text-blue-500 text-xs font-medium ml-1"
+                                                    >
+                                                        {isCommentExpanded ? "Show Less" : "Show More"}
+                                                    </button>
+                                                )}
+                                            </p>
+                                        )}
                                     </div>
                                 </div>
-                                <div className="flex gap-2 mt-2 items-center">
-                                    <button
-                                        onClick={() => handleCommentLike(comment.id)}
-                                        className={`flex items-center gap-1 ${interaction.isCommentLiked ? 'text-blue-600' : 'text-gray-600'}`}
-                                    >
-                                        {interaction.isCommentLiked ? <HandThumbUpSolid className="w-4 h-4" /> : <HandThumbUpOutline className="w-4 h-4" />}
-                                        <span className="text-sm">{interaction.totalCommentLikes}</span>
-                                    </button>
-                                    <button
-                                        onClick={() => handleCommentDislike(comment.id)}
-                                        className={`flex items-center gap-1 ${interaction.isCommentDisliked ? 'text-red-600' : 'text-gray-600'}`}
-                                    >
-                                        {interaction.isCommentDisliked ? <HandThumbDownSolid className="w-4 h-4" /> : <HandThumbDownOutline className="w-4 h-4" />}
-                                        <span className="text-sm">{interaction.totalCommentDislikes}</span>
-                                    </button>
-                                    <button
-                                        onClick={() => toggleReplyInput(comment.id)}
-                                        className="text-gray-600 hover:text-blue-500 text-sm font-medium"
-                                    >
-                                        Reply
-                                    </button>
-                                    {replyCount > 0 && (
+                                {!isEditing && (
+                                    <div className="flex gap-2 mt-2 items-center">
                                         <button
-                                            onClick={() => toggleRepliesVisibility(comment.id)}
-                                            className="flex items-center gap-1 text-gray-600 hover:text-blue-500 text-sm font-medium ml-2"
+                                            onClick={() => handleCommentLike(comment.id)}
+                                            className={`flex items-center gap-1 ${interaction.isCommentLiked ? 'text-blue-600' : 'text-gray-600'}`}
                                         >
-                                            {isRepliesExpanded ? (
-                                                <ChevronUpIcon className="w-4 h-4" />
-                                            ) : (
-                                                <ChevronDownIcon className="w-4 h-4" />
-                                            )}
-                                            <span>
-                                                {isRepliesExpanded ? 'Hide' : 'Show'} {replyCount} {replyCount === 1 ? 'reply' : 'replies'}
-                                            </span>
+                                            {interaction.isCommentLiked ? <HandThumbUpSolid className="w-4 h-4" /> : <HandThumbUpOutline className="w-4 h-4" />}
+                                            <span className="text-sm">{interaction.totalCommentLikes}</span>
                                         </button>
-                                    )}
-                                </div>
+                                        <button
+                                            onClick={() => handleCommentDislike(comment.id)}
+                                            className={`flex items-center gap-1 ${interaction.isCommentDisliked ? 'text-red-600' : 'text-gray-600'}`}
+                                        >
+                                            {interaction.isCommentDisliked ? <HandThumbDownSolid className="w-4 h-4" /> : <HandThumbDownOutline className="w-4 h-4" />}
+                                            <span className="text-sm">{interaction.totalCommentDislikes}</span>
+                                        </button>
+                                        <button
+                                            onClick={() => toggleReplyInput(comment.id)}
+                                            className="text-gray-600 hover:text-blue-500 text-sm font-medium"
+                                        >
+                                            Reply
+                                        </button>
+                                        {replyCount > 0 && (
+                                            <button
+                                                onClick={() => toggleRepliesVisibility(comment.id)}
+                                                className="flex items-center gap-1 text-gray-600 hover:text-blue-500 text-sm font-medium ml-2"
+                                            >
+                                                {isRepliesExpanded ? (
+                                                    <ChevronUpIcon className="w-4 h-4" />
+                                                ) : (
+                                                    <ChevronDownIcon className="w-4 h-4" />
+                                                )}
+                                                <span>
+                                                    {isRepliesExpanded ? 'Hide' : 'Show'} {replyCount} {replyCount === 1 ? 'reply' : 'replies'}
+                                                </span>
+                                            </button>
+                                        )}
+                                    </div>
+                                )}
 
-                                {interaction.showReplyInput && (
+                                {interaction.showReplyInput && !isEditing && (
                                     <div className="mt-2 flex gap-2">
                                         <input
                                             value={interaction.replyContent}
@@ -217,8 +370,6 @@ const renderComments = (
 };
 
 
-
-
 export const FullBlog = ({
     id,
     author,
@@ -230,7 +381,8 @@ export const FullBlog = ({
     likes,
     dislikes,
     blogInteraction,
-    comments
+    comments,
+    userId
 }: Blog) => {
     console.log("Initial blogInteraction.isLiked:", blogInteraction?.isLiked);
     console.log(comments)
@@ -264,6 +416,9 @@ export const FullBlog = ({
     //     if (totalBlogLike < 0) setTotalBlogLike(0);
     //     if (totalBlogDislike < 0) setTotalBlogDislike(0);
     // }, [isBlogLiked, isBlogDisliked]);  // Missing dependencies
+
+
+
 
     console.log("Initial isLiked:", isBlogLiked, "Initial isDisliked:", isBlogDisliked);
     // Replace the handleBlogLike and handleBlogDislike functions with these fixed versions
@@ -448,7 +603,8 @@ export const FullBlog = ({
 
             setCommentInteractions(restoredInteractions);
         }
-    }; const handleReply = async (commentId: number, setIsReplyLoading: (arg0: boolean) => void) => {
+    };
+    const handleReply = async (commentId: number, setIsReplyLoading: (arg0: boolean) => void) => {
         const commentIdx = commentInteractions.findIndex(c => c.id === commentId);
         const replyContent = commentInteractions[commentIdx].replyContent;
 
@@ -501,6 +657,47 @@ export const FullBlog = ({
     const [isCommentLoading, setIsCommentLoading] = useState(false);
     // const [isReplyLoading, setIsReplyLoading] = useState(false);
 
+
+    const handleEditComment = async (id: Number, editContent: string, setIsEditCommentLoading: (arg0: boolean) => void) => {
+        try {
+            setIsEditCommentLoading(true)
+            const response = await axios.put(
+                `${BACKEND_URL}/api/v1/blog/comment/${id}`,
+                { editComment: editContent },
+                { headers: { Authorization: localStorage.getItem("token") || "" } }
+            );
+            const newComment = response.data.comment;
+            // setAllComments()
+            setAllComments((prevComments) =>
+                prevComments.map((comment) =>
+                    comment.id === id ? { ...comment, ...newComment } : comment
+                )
+            );
+            setIsEditCommentLoading(false)
+
+            console.log(allComments)
+        } catch (error) {
+            console.error("Failed to post reply:", error);
+        }
+    }
+
+
+    const handleDeleteComment = async (id: Number, setIsDeleteCommentLoading: (arg0: boolean) => void) => {
+        try {
+            setIsDeleteCommentLoading(true)
+            await axios.delete(
+                `${BACKEND_URL}/api/v1/blog/comment/${id}`,
+                { headers: { Authorization: localStorage.getItem("token") || "" } }
+            );
+            setAllComments((prevComments) =>
+                prevComments.filter((comment) => comment.id !== id)
+            );
+            setIsDeleteCommentLoading(false)
+            console.log(allComments)
+        } catch (error) {
+            console.error("Failed to post reply:", error);
+        }
+    }
     const handleComment = async () => {
         // Check if comment is empty or only whitespace
         if (!comment || comment.trim() === "") {
@@ -543,6 +740,29 @@ export const FullBlog = ({
             setIsCommentLoading(false);
         }
     };
+
+
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+    // Function to adjust textarea height
+    const adjustHeight = () => {
+        const textarea = textareaRef.current;
+        if (textarea) {
+            // Reset height to auto to get the correct scrollHeight
+            textarea.style.height = 'auto';
+            // Set height to match content
+            textarea.style.height = `${textarea.scrollHeight}px`;
+        }
+    };
+
+    // Adjust height when component mounts or comment changes
+    useEffect(() => {
+        adjustHeight();
+    }, [comment]);
+
+
+
+
     const toggleZoom = (src?: string) => {
         setZoomedImage(src ? src : null);
     };
@@ -662,7 +882,7 @@ export const FullBlog = ({
                                             d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                                         />
                                     </svg>
-                                    <span className="font-semibold text-sm tracking-wide">Blog Author</span>
+                                    <span className="font-semibold text-sm tracking-wide">Written By</span>
                                 </div>
                                 <div className="p-3">
                                     <div className="flex items-start">
@@ -758,26 +978,34 @@ export const FullBlog = ({
                         <div className="p-3 bg-white rounded-xl shadow-sm border border-gray-100">
                             <h3 className="text-lg font-semibold text-gray-900 mb-3">Comments</h3>
                             <div className="flex gap-2 mb-4">
-                                <input
-                                    onChange={(e) => setComment(e.target.value)}
+                                <textarea
+                                    onChange={(e) => {
+                                        setComment(e.target.value);
+                                        adjustHeight();
+                                    }}
                                     value={comment}
-                                    className="text-wrap flex-1 bg-gray-50 p-2.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 placeholder-gray-400 text-sm"
+                                    ref={textareaRef}
+                                    className="flex-1 bg-gray-50 p-2.5 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition-all duration-200 placeholder-gray-400 text-sm block w-full resize-none overflow-hidden"
                                     placeholder="Share your thoughts..."
+                                    rows={1}
                                 />
                                 <motion.button
                                     onClick={handleComment}
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
-                                    className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition-colors duration-200 font-medium text-sm flex-shrink-0"
-                                >{
-                                        isCommentLoading ? <div>
-                                            <LoaderCircle className="animate-spin"></LoaderCircle>
-                                        </div> : <div>Post</div>
-                                    }
-
+                                    className="bg-green-500 text-white px-4 py-2 h-12 rounded-lg hover:bg-green-600 transition-colors duration-200 font-medium text-sm flex-shrink-0"
+                                >
+                                    {isCommentLoading ? (
+                                        <div>
+                                            <LoaderCircle className="animate-spin" />
+                                        </div>
+                                    ) : (
+                                        <div>Post</div>
+                                    )}
                                 </motion.button>
                             </div>
-                            {renderComments(allComments, commentInteractions, handleCommentLike, handleCommentDislike, toggleReplyInput, updateReplyContent, handleReply, false)}
+
+                            {renderComments(allComments, commentInteractions, handleCommentLike, handleCommentDislike, toggleReplyInput, updateReplyContent, handleReply, userId, handleEditComment, handleDeleteComment)}
                         </div>
                     </div>
                 </div>

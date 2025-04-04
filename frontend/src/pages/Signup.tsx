@@ -181,8 +181,11 @@ function SignupAuth({ setAlertMessage, setShowAlert, setAlertType }: SignupAuthP
                     setAlertMessage("Invalid username or password. Please try again.");
                 } else if (error.response.status === 411) {
                     setAlertMessage("User already exists. Please try a different username or sign in.");
-                } else {
-                    setAlertMessage(`Error: ${error.response.data.message || "Unexpected error occurred"}`);
+                } else if(error.response.status === 409 ){
+                    setAlertMessage(`Error: ${error.response.data.message || "User Already Exits"}`);
+                }
+                else{
+                    setAlertMessage(`Error: ${error.response.data.message || "Unexpected Error Occured"}`);
                 }
             } else {
                 setAlertMessage("Network error. Please check your connection.");

@@ -1,4 +1,4 @@
-import z from 'zod'
+import z, { string } from 'zod'
 
 export const signupInput = z.object({
     username: z.string().email(),
@@ -56,6 +56,10 @@ export const updateInfoInput = z.object({
     x: z.string(),
 })
 
+export const updateCommentInput = z.object({
+    editComment : z.string()
+})
+
 export const authorInfoInput = z.object({
     id: z.number()
 })
@@ -64,6 +68,7 @@ export type SignupInput = z.infer<typeof signupInput>
 export type SigninInput = z.infer<typeof signinInput>
 export type CreateBlogInput = z.infer<typeof createBlogInput>
 export type CreateCommentInput = z.infer<typeof createCommentInput>
+export type UpdateCommentInput = z.infer<typeof createCommentInput>
 export type UpdateBlogInput = z.infer<typeof updateBlogInput>
 export type UserDetails = z.infer<typeof userDetails>
 export type UpdateAboutInput = z.infer<typeof updateAboutInput>

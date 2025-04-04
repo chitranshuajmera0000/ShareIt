@@ -3,8 +3,11 @@ import { PrismaClient } from '@prisma/client/edge'
 import { Hono } from "hono";
 import { sign, verify } from "hono/jwt";
 import { Bindings } from "hono/types";
+import bcrypt from "bcryptjs";
 import { signupInput, signinInput, userDetails, updateAboutInput, updateInfoInput, authorInfoInput } from "@beginnerdev/common";
 import { auth } from "./blog";
+
+
 export const userRouter = new Hono<
   {
     Bindings: {
@@ -17,37 +20,45 @@ export const userRouter = new Hono<
   }
 >();
 
-userRouter.post('/signup', async (c) => {
 
+userRouter.post('/signup', async (c) => {
   const prisma = new PrismaClient({
     datasourceUrl: c.env.DATABASE_URL,
-  }).$extends(withAccelerate())
+  }).$extends(withAccelerate());
 
   const body = await c.req.json();
-  const { success } = signupInput.safeParse(body)
+  const { success } = signupInput.safeParse(body);
   if (!success) {
-    c.status(411)
+    c.status(411);
     return c.json({
       message: "Incorrect Inputs"
-    })
+    });
   }
+
   try {
+    // Hash the password with bcryptjs
+    const saltRounds = 10; // Adjust salt rounds as needed (10 is a good default)
+    const hashedPassword = await bcrypt.hash(body.password, saltRounds);
+
     const user = await prisma.user.create({
       data: {
         username: body.username,
-        password: body.password,
+        password: hashedPassword, // Store the hashed password
       }
-    })
-    const token = await sign({ id: user.id }, c.env.JWT_SECRET)
+    });
+
+    const token = await sign({ id: user.id }, c.env.JWT_SECRET);
     return c.json({
       jwt: token
-    })
+    });
   } catch (e) {
-    c.status(411);
-    return c.json({ Error: 'User Already Exists' })
+    console.error("Signup error:", e);
+    c.status(409); // 409 Conflict is more appropriate for duplicate user
+    return c.json({ error: 'User Already Exists' });
+  } finally {
+    await prisma.$disconnect(); // Ensure cleanup
   }
-})
-
+});
 
 
 userRouter.post('/signin', async (c) => {
@@ -68,7 +79,6 @@ userRouter.post('/signin', async (c) => {
     const user = await prisma.user.findUnique({
       where: {
         username: body.username,
-        password: body.password,
       }
     });
 
@@ -76,12 +86,19 @@ userRouter.post('/signin', async (c) => {
       c.status(403);
       return c.json({ Error: "User Not Found !!" })
     }
+    const isPasswordValid = await bcrypt.compare(body.password, user.password);
+    if (!isPasswordValid) {
+      c.status(403);
+      return c.json({ error: "Invalid password" });
+    }
 
     const token = await sign({ id: user.id }, c.env.JWT_SECRET)
     return c.json({ jwt: token })
   } catch (e) {
     c.status(403)
     return c.json({ Error: "Invalid Credentials" })
+  }finally {
+    await prisma.$disconnect();
   }
 })
 
@@ -108,7 +125,7 @@ userRouter.use("/*", async (c, next) => {
     return c.json({
       message: "Invalid token or authorization error !!"
     })
-  }
+  } 
 
 })
 

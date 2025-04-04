@@ -3,7 +3,7 @@ import axios from "axios";
 import { DesktopNavbar } from "../components/navbar/DesktopNavbar";
 import { BACKEND_URL } from "../config";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Tiptap from "../components/Tiptap";
 import { BlogSkeleton } from "../components/BlogSkeleton";
 import useResponsive from "../hooks";
@@ -24,14 +24,10 @@ export const Publish = () => {
     const [isUploading, setIsUploading] = useState(false);
     const [isDraggingOver, setIsDraggingOver] = useState(false);
     const { isMobile, isDesktop } = useResponsive();
-    const [isEditMode, setIsEditMode] = useState(false);
-    const [blogId, setBlogId] = useState<string | null>(null);
-    const [isLoadingBlog, setIsLoadingBlog] = useState(false);
 
     const fileInputRef = useRef<HTMLInputElement>(null);
     const dropAreaRef = useRef<HTMLDivElement>(null);
     const navigate = useNavigate();
-    const params = useParams();
 
     // Animation variants
     const pageTransition = {
@@ -59,40 +55,7 @@ export const Publish = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        // if (localStorage.getItem("token") === null) {
-        //     showAlertMessage("You are not authorized to visit this page! Redirecting to sign-in page...", "error");
-        //     const timer = setTimeout(() => {
-        //         setShowAlert(false);
-        //         navigate("/signin");
-        //     }, 3000);
-        //     return () => clearTimeout(timer);
-        // }
-        if (params.id) {
-            setIsEditMode(true);
-            setBlogId(params.id);
-            loadBlogData(params.id);
-        }
-    }, [params.id]);
-
-    const loadBlogData = async (id: string) => {
-        setIsLoadingBlog(true);
-        try {
-            const response = await axios.get(`${BACKEND_URL}/api/v1/blog/${id}`, {
-                headers: { Authorization: `${localStorage.getItem("token")}` },
-            });
-            const blog = response.data;
-            setTitle(blog.title || "");
-            setSubtitle(blog.subtitle || "");
-            setImage(blog.thumbnailUrl || "");
-            setImagePreview(blog.thumbnailUrl || "");
-            setDescription(blog.content || "");
-        } catch (error) {
-            console.error("Error loading blog:", error);
-            showAlertMessage("Failed to load blog data. Please try again.", "error");
-        } finally {
-            setIsLoadingBlog(false);
-        }
-    };
+    }, []);
 
     const showAlertMessage = (message: string, type: "success" | "error" | "warning") => {
         setAlertMessage(message);
@@ -180,20 +143,12 @@ export const Publish = () => {
         setIsLoading(true);
         try {
             const blogData = { title, subtitle, thumbnailUrl: image, content: description };
-            let response;
-            if (isEditMode && blogId) {
-                response = await axios.put(`${BACKEND_URL}/api/v1/blog/${blogId}`, blogData, {
-                    headers: { Authorization: `${localStorage.getItem("token")}` },
-                });
-                showAlertMessage("Blog updated successfully!", "success");
-            } else {
-                response = await axios.post(`${BACKEND_URL}/api/v1/blog/blog`, blogData, {
-                    headers: { Authorization: `${localStorage.getItem("token")}` },
-                });
-                showAlertMessage("Blog published successfully!", "success");
-            }
+            const response = await axios.post(`${BACKEND_URL}/api/v1/blog/blog`, blogData, {
+                headers: { Authorization: `${localStorage.getItem("token")}` },
+            });
+            showAlertMessage("Blog published successfully!", "success");
             setTimeout(() => {
-                navigate(`/blog/${response.data.id || blogId}`);
+                navigate(`/blog/${response.data.id}`);
             }, 1000);
         } catch (error: any) {
             console.error("Error publishing blog:", error);
@@ -216,27 +171,23 @@ export const Publish = () => {
         </div>
     );
 
-    if (isEditMode && isLoadingBlog) {
-        return <BlogSkeleton />;
-    }
-
     return (
         <motion.div {...pageTransition} className="min-h-screen bg-gradient-to-b from-blue-50 to-indigo-100 p-2">
             {renderNavbar()}
-            <div className="relative overflow-hidden mb-8">
+            <div className="relative overflow-hidden mb-4"> {/* Reduced mb-8 to mb-4 */}
                 <div className="absolute -top-24 -left-24 w-64 h-64 bg-gradient-to-r from-purple-300/30 to-indigo-300/30 rounded-full blur-3xl"></div>
                 <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-gradient-to-r from-indigo-300/30 to-blue-300/30 rounded-full blur-3xl"></div>
                 <motion.div
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7 }}
-                    className="container mx-auto px-4 pt-12 pb-6 text-center relative z-10"
+                    className="container mx-auto px-4 pt-12 pb-2 text-center relative z-10" 
                 >
-                    <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-purple-700 mb-3">
-                        {isEditMode ? "Edit Your Blog" : "Create New Blog"}
+                    <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-purple-700 mb-2"> {/* Reduced mb-3 to mb-2 */}
+                        Create New Blog
                     </h1>
                     <p className="text-indigo-800/70 max-w-2xl mx-auto">
-                        {isEditMode ? "Refine your story" : "Share your thoughts with the world"}
+                        Share your thoughts with the world
                     </p>
                 </motion.div>
             </div>
@@ -412,7 +363,7 @@ export const Publish = () => {
                         </motion.div>
                     </div>
 
-                    <motion.div variants={itemVariants} className="flex justify-center py-6 px-8 gap-4 bg-gradient-to-r from-gray-50 to-gray-100 border-t border-gray-100">
+                    <motion.div variants={itemVariants} className="flex justify-center py-6 px-8 gap-4 bg-gradient-to-r from-gray-50 to-gray-100 border-t border-gray-200">
                         <motion.button
                             whileHover={{ scale: 1.05, boxShadow: "0 10px 15px -3px rgba(79, 70, 229, 0.2)" }}
                             whileTap={{ scale: 0.95 }}
@@ -426,10 +377,10 @@ export const Publish = () => {
                                         <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                                         <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
                                     </svg>
-                                    {isEditMode ? "Updating..." : "Publishing..."}
+                                    Publishing...
                                 </div>
                             ) : (
-                                isEditMode ? "Update Blog" : "Publish Blog"
+                                "Publish Blog"
                             )}
                         </motion.button>
                         <motion.button
