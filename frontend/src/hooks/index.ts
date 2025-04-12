@@ -130,7 +130,7 @@ const defaultDetails: Details = {
 
 
 export interface AuthorInfo {
-    details: Details[],
+    details: Details,
     posts: Blog[]
 }
 
@@ -142,11 +142,11 @@ export interface SigninAuth {
 
 
 const defaultAuthorInfo: AuthorInfo = {
-    details: [{
+    details: {
         name: "", profession: "", location: "", about: "", id: 0, company: "", instagram: "https://instagram.com",
         linkedin: "https://linkedin.com",
         x: "https://x.com", profileUrl: "https://res.cloudinary.com/dxj9gigbq/image/upload/v1738260302/zdkmb0olwoljayeawwps.png"
-    }]/* Default author object here */,
+    }/* Default author object here */,
     posts: []
 };
 

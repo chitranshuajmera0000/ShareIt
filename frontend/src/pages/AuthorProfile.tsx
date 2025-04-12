@@ -12,9 +12,9 @@ const AuthorProfile = () => {
     
     const [userData] = useState({
         socialLinks: [
-            { platform: "Instagram", url: author.details[0].instagram, icon: "https://res.cloudinary.com/dxj9gigbq/image/upload/v1742762081/vce1ar88sheqkxy6zk6a.png" },
-            { platform: "X", url: author.details[0].x, icon: "https://res.cloudinary.com/dxj9gigbq/image/upload/v1742762069/qlxvqtpseuivmf6uhfwd.png" },
-            { platform: "LinkedIn", url: author.details[0].linkedin, icon: "https://res.cloudinary.com/dxj9gigbq/image/upload/v1742762076/c2h4ryhnkvjeuprjwlrg.png" },
+            { platform: "Instagram", url: author.details.instagram, icon: "https://res.cloudinary.com/dxj9gigbq/image/upload/v1742762081/vce1ar88sheqkxy6zk6a.png" },
+            { platform: "X", url: author.details.x, icon: "https://res.cloudinary.com/dxj9gigbq/image/upload/v1742762069/qlxvqtpseuivmf6uhfwd.png" },
+            { platform: "LinkedIn", url: author.details.linkedin, icon: "https://res.cloudinary.com/dxj9gigbq/image/upload/v1742762076/c2h4ryhnkvjeuprjwlrg.png" },
         ],
     });
     const navigate = useNavigate();
@@ -49,7 +49,7 @@ const AuthorProfile = () => {
 
     // ProfileHeader Component
     const ProfileHeader = () => {
-        if (!author?.details?.[0]) return null;
+        if (!author?.details) return null;
 
         return (
             <motion.div variants={itemVariants} className="bg-white rounded-xl shadow-lg p-6 md:p-8 relative overflow-hidden">
@@ -63,25 +63,25 @@ const AuthorProfile = () => {
                         className={`${isMobile ? "w-32 h-32" : "w-40 h-40"} rounded-full overflow-hidden shadow-lg border-4 border-white`}
                     >
                         <img
-                            src={author.details[0].profileUrl || "https://via.placeholder.com/150"}
-                            alt={author.details[0].name}
+                            src={author.details.profileUrl || "https://via.placeholder.com/150"}
+                            alt={author.details.name}
                             className="w-full h-full object-cover"
                             onError={(e) => (e.currentTarget.src = "https://via.placeholder.com/150")}
                         />
                     </motion.div>
                     <div className={`flex flex-col ${isMobile ? "items-center w-full" : "items-center md:items-start"}`}>
                         <h1 className={`${isMobile ? "text-2xl" : "text-3xl"} font-bold text-gray-800 group-hover:text-indigo-700 transition-colors`}>
-                            {author.details[0].name}
+                            {author.details.name}
                         </h1>
                         <p className={`${isMobile ? "text-lg" : "text-xl"} text-gray-600 mt-2 text-center md:text-left`}>
-                            {author.details[0].company ? `${author.details[0].profession} at ${author.details[0].company}` : author.details[0].profession}
+                            {author.details.company ? `${author.details.profession} at ${author.details.company}` : author.details.profession}
                         </p>
                         <div className="flex items-center mt-2 text-gray-600">
                             <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                             </svg>
-                            {author.details[0].location}
+                            {author.details.location}
                         </div>
                         <div className={`flex gap-4 mt-4 ${isMobile ? "justify-center" : ""}`}>
                             {userData.socialLinks.map((link) => (
@@ -105,7 +105,7 @@ const AuthorProfile = () => {
 
     // PersonalSummary Component
     const PersonalSummary = () => {
-        if (!author?.details?.[0]) return null;
+        if (!author?.details) return null;
 
         return (
             <motion.div variants={itemVariants} className="mt-8 bg-white rounded-xl shadow-lg p-6 md:p-8 relative overflow-hidden">
@@ -113,7 +113,7 @@ const AuthorProfile = () => {
                 <h2 className="text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-purple-700 mb-6 text-center md:text-left">
                     Mind Behind the Words
                 </h2>
-                <p className="text-gray-600 leading-relaxed text-center md:text-left">{author.details[0].about || "No about information available."}</p>
+                <p className="text-gray-600 leading-relaxed text-center md:text-left">{author.details.about || "No about information available."}</p>
             </motion.div>
         );
     };
