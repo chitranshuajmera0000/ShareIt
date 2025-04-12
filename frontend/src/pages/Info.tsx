@@ -2,7 +2,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { Camera } from "lucide-react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { BACKEND_URL } from "../config";
+import { BACKEND_URL, CLOUD_NAME, UPLOAD_PRESET } from "../config";
 
 export default function Info() {
     useEffect(() => {
@@ -62,11 +62,11 @@ export default function Info() {
 
             const image = new FormData();
             image.append('file', file);
-            image.append('upload_preset', 'ShareIt');
+            image.append('upload_preset', `${UPLOAD_PRESET}`);
 
             try {
                 const response = await axios.post(
-                    "https://api.cloudinary.com/v1_1/dxj9gigbq/upload",
+                    `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/upload`,
                     image
                 );
                 setImagePreview(response.data.secure_url);
