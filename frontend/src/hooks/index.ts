@@ -296,8 +296,8 @@ export const useBlog = () => {
                 //     blogData.thumbnailUrl =
                 //         "https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
                 // }
-                if (!blogData.author.details[0].profileUrl) {
-                    blogData.author.details[0].profileUrl =
+                if (!blogData.author.details.profileUrl) {
+                    blogData.author.details.profileUrl =
                         "https://res.cloudinary.com/dxj9gigbq/image/upload/v1738260287/ll30su5iglsgz2xgyjmv.png";
                 }
                 setTotalBlogLikes(response.data.totalBlogLikes)
@@ -568,8 +568,8 @@ export const useAuthor = (id: number) => {
             }
         )
             .then((response) => {
-                if (response.data.person.details[0].profileUrl == "") {
-                    response.data.person.details[0].profileUrl = "https://res.cloudinary.com/dxj9gigbq/image/upload/v1738260287/ll30su5iglsgz2xgyjmv.png"
+                if (response.data.person.details.profileUrl == "") {
+                    response.data.person.details.profileUrl = "https://res.cloudinary.com/dxj9gigbq/image/upload/v1738260287/ll30su5iglsgz2xgyjmv.png"
                 }
                 const sortedBlogs = response.data.person.posts
                     .sort((a: Blog, b: Blog) =>
