@@ -221,7 +221,7 @@ export const Blogs = () => {
             }
         }
 
-        console.log(post.author.details[0].name)
+        // console.log(post.author.details[0].name)
         const authorName = post.author.details[0].name ?? "Unknown Author";
 
         return (
