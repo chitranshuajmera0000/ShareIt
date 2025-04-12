@@ -1,7 +1,7 @@
 "use client";
 import axios from "axios";
 import { DesktopNavbar } from "../components/navbar/DesktopNavbar";
-import { BACKEND_URL } from "../config";
+import { BACKEND_URL, CLOUD_NAME, UPLOAD_PRESET } from "../config";
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Tiptap from "../components/Tiptap";
@@ -23,6 +23,7 @@ export const Publish = () => {
     const [isUploading, setIsUploading] = useState(false);
     const [isDraggingOver, setIsDraggingOver] = useState(false);
     const { isMobile, isDesktop } = useResponsive();
+    const [deleteToken, setDeleteToken] = useState("")
 
     const fileInputRef = useRef<HTMLInputElement>(null);
     const dropAreaRef = useRef<HTMLDivElement>(null);
@@ -102,10 +103,12 @@ export const Publish = () => {
         try {
             const formData = new FormData();
             formData.append("file", file);
-            formData.append("upload_preset", "blogify");
-            const response = await axios.post("https://api.cloudinary.com/v1_1/dxj9gigbq/upload", formData);
+            formData.append("upload_preset", `${UPLOAD_PRESET}`);
+            const response = await axios.post(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/upload`, formData);
             setImage(response.data.secure_url);
             setImagePreview(response.data.secure_url);
+            setDeleteToken(response.data.delete_token);
+            console.log(deleteToken)
             showAlertMessage("Image uploaded successfully!", "success");
         } catch (error) {
             console.error("Error uploading image:", error);
@@ -116,10 +119,51 @@ export const Publish = () => {
     };
 
     const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
+        if (deleteToken) {
+            try {
+                const response = await axios.post(
+                    `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/delete_by_token`,
+                    { token: deleteToken },
+                    {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                );
+                console.log('Delete response:', response.data);
+                setDeleteToken("");
+            } catch (error: any) {
+                console.error('Error deleting image:', error.response?.data || error.message);
+            }
+        }
         if (e.target.files && e.target.files[0]) {
             await handleImageFile(e.target.files[0]);
         }
+
+    }
+
+
+    const handleDeleteImage = async () => {
+        if (deleteToken) {
+            try {
+                const response = await axios.post(
+                    `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/delete_by_token`,
+                    { token: deleteToken },
+                    {
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                );
+                console.log('Delete response:', response.data);
+                setDeleteToken("");
+            } catch (error: any) {
+                console.error('Error deleting image:', error.response?.data || error.message);
+            }
+        }
     };
+
+
 
     const handleCancel = () => {
         setIsCancelling(true);
@@ -180,7 +224,7 @@ export const Publish = () => {
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.7 }}
-                    className="container mx-auto px-4 pt-12 pb-2 text-center relative z-10" 
+                    className="container mx-auto px-4 pt-12 pb-2 text-center relative z-10"
                 >
                     <h1 className="text-3xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-indigo-700 to-purple-700 mb-2"> {/* Reduced mb-3 to mb-2 */}
                         Create New Blog
@@ -203,13 +247,12 @@ export const Publish = () => {
                             initial={{ x: 300, opacity: 0 }}
                             animate={{ x: 0, opacity: 1 }}
                             exit={{ x: 300, opacity: 0 }}
-                            className={`fixed top-20 right-4 z-50 p-4 mb-4 text-sm rounded-lg shadow-xl ${
-                                alertType === "error"
-                                    ? "bg-gradient-to-r from-red-500 to-pink-600 text-white"
-                                    : alertType === "success"
+                            className={`fixed top-20 right-4 z-50 p-4 mb-4 text-sm rounded-lg shadow-xl ${alertType === "error"
+                                ? "bg-gradient-to-r from-red-500 to-pink-600 text-white"
+                                : alertType === "success"
                                     ? "bg-gradient-to-r from-green-500 to-emerald-600 text-white"
                                     : "bg-gradient-to-r from-yellow-500 to-amber-600 text-white"
-                            }`}
+                                }`}
                             role="alert"
                         >
                             <div className="flex items-center justify-between">
@@ -280,9 +323,8 @@ export const Publish = () => {
                             </label>
                             <motion.div
                                 ref={dropAreaRef}
-                                className={`mt-2 p-4 border-2 border-dashed rounded-lg ${
-                                    isDraggingOver ? "border-indigo-500 bg-indigo-50" : imagePreview ? "border-indigo-300 bg-indigo-50" : "border-gray-300 bg-gray-50"
-                                }`}
+                                className={`mt-2 p-4 border-2 border-dashed rounded-lg ${isDraggingOver ? "border-indigo-500 bg-indigo-50" : imagePreview ? "border-indigo-300 bg-indigo-50" : "border-gray-300 bg-gray-50"
+                                    }`}
                                 whileHover={{ scale: 1.01 }}
                                 transition={{ duration: 0.2 }}
                             >
@@ -337,9 +379,12 @@ export const Publish = () => {
                                                 whileHover={{ scale: 1.05 }}
                                                 whileTap={{ scale: 0.95 }}
                                                 type="button"
-                                                onClick={() => {
+                                                onClick={async () => {
+                                                    await handleDeleteImage()
                                                     setImage("");
                                                     setImagePreview("");
+
+                                                    handleImageChange;
                                                 }}
                                                 className="px-4 py-2 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-md shadow-md text-sm font-medium focus:outline-none transition-all duration-200"
                                             >

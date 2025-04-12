@@ -589,7 +589,7 @@ export default function Info() {
 
             const image = new FormData();
             image.append('file', file);
-            image.append('upload_preset', 'blogify');
+            image.append('upload_preset', 'ShareIt');
 
             try {
                 const response = await axios.post(

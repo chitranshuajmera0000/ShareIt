@@ -112,10 +112,21 @@ export const EditBlog: React.FC<EditBlogProps> = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!formData.title || !formData.content) {
-            setError("Title and content are required.");
+        if (!formData.title?.trim()) {
+            setError("Title is required.");
             return;
         }
+
+        // Check for empty content (including stripping HTML tags and whitespace)
+        const plainTextContent = formData.content
+            ?.replace(/<[^>]*>/g, '') // Remove HTML tags
+            ?.trim(); // Remove whitespace
+
+        if (!plainTextContent) {
+            setError("Content cannot be empty.");
+            return;
+        }
+        
         setIsSubmitting(true);
         setError('');
         try {
