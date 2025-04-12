@@ -49,7 +49,7 @@ export const Blogs = () => {
             blog.content.toLowerCase().includes(filter.toLowerCase()) ||
             blog.time.toLowerCase().includes(filter.toLowerCase()) ||
             (blog.subtitle && blog.subtitle.toLowerCase().includes(filter.toLowerCase())) ||
-            blog.author.details[0].name.toLowerCase().includes(filter.toLowerCase())
+            blog.author.details.name.toLowerCase().includes(filter.toLowerCase())
         )
         : blogs;
 
@@ -222,7 +222,7 @@ export const Blogs = () => {
         }
 
         // console.log(post.author.details[0].name)
-        const authorName = post.author.details[0].name ?? "Unknown Author";
+        const authorName = post.author.details.name;
 
         return (
             <motion.div

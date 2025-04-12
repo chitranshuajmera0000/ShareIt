@@ -34,7 +34,7 @@ const defaultBlog: Blog = {
     time: '',
     thumbnailUrl: '',
     authorId: 0,
-    author: { details: [{ name: "User", profession: "", location: "", userId: 0, profileUrl: 'U', company: "" }]/* Default author object here */ },
+    author: { details: { name: "User", profession: "", location: "", userId: 0, profileUrl: 'U', company: "" }/* Default author object here */ },
     publishedDate: '',
     likes: 0,
     dislikes: 0,

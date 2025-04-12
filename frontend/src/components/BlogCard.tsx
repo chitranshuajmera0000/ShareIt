@@ -16,7 +16,7 @@ export interface Author {
         userId:number;
         profileUrl : string;
         company : string;
-    }[]
+    }
 }
 
 export const BlogCard = ({
@@ -56,11 +56,11 @@ export const BlogCard = ({
 
                 <div className="flex pb-2 pt-2">
                     <div className="flex justify-center">
-                        <Avatar name={authorName.details[0].name}></Avatar>
+                        <Avatar name={authorName.details.name}></Avatar>
                     </div>
                     <div className="flex justify-center py-1.5">
 
-                        <div className="py-1 pl-2 text-lg font-semibold hover:font-bold hover:cursor-pointer">{authorName.details[0].name}</div>
+                        <div className="py-1 pl-2 text-lg font-semibold hover:font-bold hover:cursor-pointer">{authorName.details.name}</div>
                         <div className="py-2.5 px-1.5 font-semibold text-white text-xs ">
                             &#9679;
                         </div>
