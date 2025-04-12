@@ -23,7 +23,6 @@ export const Signin = () => {
                     }
                 })
                 .then(() => {
-                    console.log("Authentication successful");
                     setAlertType("success");
                     setAlertMessage("You are Already Logged In!!! Redirecting to Blogs page...");
                     setShowAlert(true);
@@ -32,8 +31,7 @@ export const Signin = () => {
                     }, 3000);
                     return () => clearTimeout(timer);
                 })
-                .catch((error) => {
-                    console.log("Authentication error:", error);
+                .catch(() => {
                     setAlertType("error");
                     setAlertMessage("Failed to verify login status. Please try again.");
                     setShowAlert(true);

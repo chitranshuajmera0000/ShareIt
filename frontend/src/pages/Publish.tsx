@@ -108,7 +108,6 @@ export const Publish = () => {
             setImage(response.data.secure_url);
             setImagePreview(response.data.secure_url);
             setDeleteToken(response.data.delete_token);
-            console.log(deleteToken)
             showAlertMessage("Image uploaded successfully!", "success");
         } catch (error) {
             console.error("Error uploading image:", error);
@@ -121,7 +120,7 @@ export const Publish = () => {
     const handleImageChange = async (e: ChangeEvent<HTMLInputElement>) => {
         if (deleteToken) {
             try {
-                const response = await axios.post(
+                await axios.post(
                     `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/delete_by_token`,
                     { token: deleteToken },
                     {
@@ -130,7 +129,6 @@ export const Publish = () => {
                         }
                     }
                 );
-                console.log('Delete response:', response.data);
                 setDeleteToken("");
             } catch (error: any) {
                 console.error('Error deleting image:', error.response?.data || error.message);
@@ -146,7 +144,7 @@ export const Publish = () => {
     const handleDeleteImage = async () => {
         if (deleteToken) {
             try {
-                const response = await axios.post(
+                await axios.post(
                     `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/delete_by_token`,
                     { token: deleteToken },
                     {
@@ -155,7 +153,6 @@ export const Publish = () => {
                         }
                     }
                 );
-                console.log('Delete response:', response.data);
                 setDeleteToken("");
             } catch (error: any) {
                 console.error('Error deleting image:', error.response?.data || error.message);

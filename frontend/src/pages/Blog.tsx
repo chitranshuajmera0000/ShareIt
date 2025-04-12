@@ -16,8 +16,6 @@ export const Blog = () => {
     const [, setShowAlert] = useState(false);
 
     const navigate = useNavigate();
-    console.log(totalBlogLikes, totalBlogDislikes)
-    console.log(blog)
     useEffect(() => {
         // Scroll to the top of the page when the component mounts
         window.scrollTo(0, 0);

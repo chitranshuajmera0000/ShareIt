@@ -26,7 +26,6 @@ export const BlogCard = ({
     time,
     content,
 }: BlogCardInput) => {
-    console.log(time);
     let c = ''
     if (content.length > 100)
         c = content.slice(0, 100) + "......"

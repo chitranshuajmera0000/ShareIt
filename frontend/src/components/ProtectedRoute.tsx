@@ -24,7 +24,6 @@ const ProtectedRoute = () => {
         axios.get(`${BACKEND_URL}/api/v1/user`, {
             headers: { Authorization: token }
         })
-        .then(() => console.log("Authentication successful"))
         .catch(() => {
             // Prevent duplicate alert if already on signin page
             if (location.pathname !== "/signin") {

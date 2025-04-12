@@ -384,8 +384,6 @@ export const FullBlog = ({
     comments,
     userId
 }: Blog) => {
-    console.log("Initial blogInteraction.isLiked:", blogInteraction?.isLiked);
-    console.log(comments)
 
 
     const [comment, setComment] = useState("");
@@ -420,7 +418,6 @@ export const FullBlog = ({
 
 
 
-    console.log("Initial isLiked:", isBlogLiked, "Initial isDisliked:", isBlogDisliked);
     // Replace the handleBlogLike and handleBlogDislike functions with these fixed versions
 
     const handleBlogLike = async () => {
@@ -675,7 +672,6 @@ export const FullBlog = ({
             );
             setIsEditCommentLoading(false)
 
-            console.log(allComments)
         } catch (error) {
             console.error("Failed to post reply:", error);
         }
@@ -693,7 +689,6 @@ export const FullBlog = ({
                 prevComments.filter((comment) => comment.id !== id)
             );
             setIsDeleteCommentLoading(false)
-            console.log(allComments)
         } catch (error) {
             console.error("Failed to post reply:", error);
         }
@@ -717,7 +712,6 @@ export const FullBlog = ({
 
             const newComment: blogComment = response.data.newComment;
             // newComment.createdAt = formatDate(newComment.createdAt);
-            console.log(allComments)
             setAllComments(prev => [newComment, ...prev]);
             setCommentInteractions(prev => [
                 ...prev,

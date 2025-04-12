@@ -22,7 +22,7 @@ export interface Blog {
         id?: number;
     } | null,
     comments: blogComment[]
-    userId:number
+    userId: number
     // Add any other properties your blog object may have
 }
 
@@ -46,7 +46,7 @@ const defaultBlog: Blog = {
         user: { details: { profileUrl: "Error 404 ", name: "User" } },
         content: "Error Fetching Comments", createdAt: "Error"
     }],
-    userId:0
+    userId: 0
 };
 
 
@@ -194,7 +194,6 @@ export function useBlogs() {
     const [pageLoading, setPageLoading] = useState(true);
 
     useEffect(() => {
-        // console.log("Fetching blogs for page:", page); // Debugging
         setPageLoading(true)
         axios.get(`${BACKEND_URL}/api/v1/blog/bulk`, {
             headers: {
@@ -231,36 +230,6 @@ export function useBlogs() {
     return { loading, blogs, totalPages, pageLoading };
 }
 
-// export const useBlogs = (initialSearchParams: string | undefined) => {
-//     const [blogs, setBlogs] = useState<Blog[]>([]);
-//     const [loading, setLoading] = useState(true);
-//     console.log("hii");
-//     const fetchBlogs = async (searchParams: string | undefined) => {
-//         setLoading(true);
-//         try {
-//             console.log("Hii3");
-//             const response = await axios.get(`/api/blog/bulk${searchParams ? `?filter=${searchParams}` : ''}`);
-//             setBlogs(response.data.blog);
-//             console.log(response.data);
-//         } catch (error) {
-//             console.error('Error fetching blogs', error);
-//             setBlogs([]);
-//         } finally {
-//             setLoading(false);
-//         }
-//     };
-
-//     useEffect(() => {
-//         console.log("Hii2");
-//         fetchBlogs(initialSearchParams);
-//     }, [initialSearchParams]);
-//     console.log(blogs);
-//     return {
-//         loading,
-//         blogs,
-//         fetchBlogs,
-//     };
-// };
 
 
 
@@ -271,7 +240,7 @@ export const useBlog = () => {
     const [err, setErr] = useState<string>(""); // Renamed to err for consistency
     const [totalBlogLikes, setTotalBlogLikes] = useState(0);
     const [totalBlogDislikes, setTotalBlogDislikes] = useState(0);
-    const [userId , setUserId] = useState(0);
+    const [userId, setUserId] = useState(0);
 
     useEffect(() => {
         const fetchBlog = async () => {
@@ -285,23 +254,14 @@ export const useBlog = () => {
                     },
                 });
 
-                console.log(response.data)
                 // Format the blog data
                 const blogData = response.data.blog;
-                console.log(blogData)
-                // const comments = response.data.blog.comments
                 blogData.time = formatDate(blogData.time);
-                // comments.map((comment: blogComment) => { comment.createdAt = formatDate(comment.createdAt); console.log(comment.createdAt) })
-                // if (!blogData.thumbnailUrl) {
-                //     blogData.thumbnailUrl =
-                //         "https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D";
-                // }
                 if (!blogData.author.details.profileUrl) {
                     blogData.author.details.profileUrl =
                         "https://res.cloudinary.com/dxj9gigbq/image/upload/v1738260287/ll30su5iglsgz2xgyjmv.png";
                 }
                 setTotalBlogLikes(response.data.totalBlogLikes)
-                console.log(response.data.blog)
                 setTotalBlogDislikes(response.data.totalBlogDislikes)
                 setBlog(blogData);
                 setUserId(response.data.userId)
@@ -585,7 +545,6 @@ export const useAuthor = (id: number) => {
                 })
                 author.details = response.data.person.details;
                 author.posts = sortedBlogs;
-                console.log(author)
                 setLoading(false)
             }
             )

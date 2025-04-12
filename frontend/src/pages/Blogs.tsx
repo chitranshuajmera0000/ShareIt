@@ -68,7 +68,6 @@ export const Blogs = () => {
 
     useEffect(() => {
         window.scrollTo(0, 0);
-        console.log(pageLoading)
         if (page > filteredTotalPages && filteredTotalPages > 0) {
             setPage(1);
         }
@@ -105,14 +104,12 @@ export const Blogs = () => {
         career: { bg: "from-indigo-500 to-blue-700", text: "text-indigo-100" }, // New career category color
     };
 
-    
+
 
     // Update getBlogCategory to return the Category type
     const getBlogCategory = (blog: Blog): Category => {
         const title = blog.title.toLowerCase();
         const content = blog.content.toLowerCase();
-        console.log("Title:", title);
-        console.log("Content excerpt:", content.slice(0, 200) + "...");
 
         const categoryKeywords: Record<string, string[]> = {
             tech: [
@@ -188,14 +185,10 @@ export const Blogs = () => {
         if (maxScore < 2) {
             bestCategory = "General";
         }
-
-        console.log("Category scores:", categoryScores);
-        console.log("Selected category:", bestCategory);
-
         return bestCategory;
     };
 
-    
+
     function BlogCard({ post }: { post: Blog }) {
         let readTime = Math.ceil(post.content.length / 500);
         let readTimeText = '';
@@ -221,7 +214,6 @@ export const Blogs = () => {
             }
         }
 
-        // console.log(post.author.details[0].name)
         const authorName = post.author.details.name;
 
         return (
@@ -424,7 +416,6 @@ export const Blogs = () => {
 
 
     if (loading || pageLoading) {
-        console.log("inside loading")
         return <Skeleton></Skeleton>
     }
     else {
