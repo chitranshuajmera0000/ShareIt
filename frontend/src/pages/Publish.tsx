@@ -10,11 +10,6 @@ import MobileNavbar from "../components/navbar/MobileNavbar";
 import { motion } from "framer-motion";
 
 export const Publish = () => {
-    console.log(import.meta.env.VITE_BACKEND_URL)
-    console.log(import.meta.env.VITE_CLOUD_NAME)
-    console.log(import.meta.env.VITE_UPLOAD_PRESET)
-
-
     const [title, setTitle] = useState("");
     const [subtitle, setSubtitle] = useState("");
     const [image, setImage] = useState<string>("");
