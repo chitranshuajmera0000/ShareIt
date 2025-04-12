@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,81 +8,83 @@ datasource db {
 }
 
 model User {
-  id                 Int                  @id @default(autoincrement())
   username           String               @unique
   password           String
+  id                 Int                  @id @default(autoincrement())
+  otpCode            String? // Store the OTP code
+  otpExpiresAt       DateTime? // Expiration time for the OTP
+  isVerified         Boolean              @default(false) // Track if the user is verified
   posts              Blog[]
-  details            Details[]
   BlogInteraction    BlogInteraction[]
   Comment            Comment[]
   CommentInteraction CommentInteraction[]
-  // SavedBlogs         Blog[]
+  details            Details?
 }
 
 model Blog {
-  id               Int               @id @default(autoincrement())
   title            String
-  subtitle         String            @default("")
   content          String
-  thumbnailUrl     String?
-  time             DateTime          @default(now())
   published        Boolean           @default(false)
-  author           User              @relation(fields: [authorId], references: [id])
+  id               Int               @id @default(autoincrement())
   authorId         Int
-  blogInteractions BlogInteraction[] // Added relation for likes/dislikes
+  subtitle         String            @default("")
+  time             DateTime          @default(now())
+  thumbnailUrl     String?
+  author           User              @relation(fields: [authorId], references: [id])
+  blogInteractions BlogInteraction[]
   comments         Comment[]
 }
 
 model Details {
-  user       User    @relation(fields: [userId], references: [id])
   userId     Int     @id
   name       String?
   profession String?
-  location   String?
   about      String?
   profileUrl String?
+  location   String?
   company    String?
   instagram  String? @default("https://instagram.com")
   linkedin   String? @default("https://linked.com")
   x          String? @default("https://x.com")
+  user       User    @relation(fields: [userId], references: [id])
 }
 
 model BlogInteraction {
   id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [id])
   userId    Int
-  blog      Blog     @relation(fields: [blogId], references: [id])
   blogId    Int
-  isLiked   Boolean? // true for like, false for dislike
   createdAt DateTime @default(now())
+  isLiked   Boolean?
+  blog      Blog     @relation(fields: [blogId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 
-  @@unique([userId, blogId]) // Ensures a user can only interact with a blog once
+  @@unique([userId, blogId])
 }
 
 model Comment {
   id                   Int                  @id @default(autoincrement())
-  user                 User                 @relation(fields: [userId], references: [id])
   userId               Int
   content              String
   createdAt            DateTime             @default(now())
-  blog                 Blog                 @relation(fields: [blogId], references: [id])
   blogId               Int
-  totalCommentLikes    Int                  @default(0)
+  parentId             Int?
   totalCommentDislikes Int                  @default(0)
+  totalCommentLikes    Int                  @default(0)
+  blog                 Blog                 @relation(fields: [blogId], references: [id])
   parent               Comment?             @relation("Replies", fields: [parentId], references: [id])
-  parentId             Int? // Nullable for top-level comments
   replies              Comment[]            @relation("Replies")
+  user                 User                 @relation(fields: [userId], references: [id])
   interactions         CommentInteraction[]
 }
 
 model CommentInteraction {
   id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [id])
   userId    Int
-  comment   Comment  @relation(fields: [commentId], references: [id])
   commentId Int
-  isLiked   Boolean? // true for like, false for dislike
   createdAt DateTime @default(now())
+  isLiked   Boolean?
+  comment   Comment  @relation(fields: [commentId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
 
-  @@unique([userId, commentId]) // Ensures a user can only interact with a specific comment once
+  @@unique([userId, commentId])
 }

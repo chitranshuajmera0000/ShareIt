@@ -10,6 +10,7 @@ const app = new Hono<{
     DATABASE_URL: string;
     JWT_SECRET: string;
     header: string;
+    RESEND_API_KEY:string;
   };
 }>();
 
@@ -79,7 +80,8 @@ app.use('*', async (c, next) => {
 
 app.use(
   cors({
-    origin: ['https://share-it-nine.vercel.app', "https://backend.1ms23ai014.workers.dev"], // Allow frontend + Worker
+    // origin: ['https://share-it-nine.vercel.app', "https://backend.1ms23ai014.workers.dev","*"], // Allow frontend + Worker
+    origin:'*',
     allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowHeaders: ['Content-Type', 'Authorization'],
   })
