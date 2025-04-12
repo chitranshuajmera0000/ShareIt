@@ -735,6 +735,7 @@ import axios from "axios";
 import { CustomImage } from "./CustomImage";
 // import parse, { domToReact } from "html-react-parser";
 import React from "react";
+import { CLOUD_NAME, UPLOAD_PRESET } from "../config";
 
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
@@ -937,13 +938,13 @@ const Tiptap = ({ onChange, size, initialContent }: { onChange: (e: any) => void
 
         const formData = new FormData();
         formData.append("file", selectedImage);
-        formData.append("upload_preset", "blogify");
+        formData.append("upload_preset", `${UPLOAD_PRESET}`);
 
         setIsUploading(true);
 
         try {
             const response = await axios.post(
-                "https://api.cloudinary.com/v1_1/dxj9gigbq/upload",
+                `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/upload`,
                 formData
             );
 
