@@ -863,7 +863,7 @@ export const FullBlog = ({
                 <div className="lg:col-span-4 w-full">
                     <div className="lg:sticky lg:top-4 space-y-3">
                         <Link
-                            to={`/${author.details[0].name}/${author.details[0].userId}`}
+                            to={`/${author.details.name}/${author.details.userId}`}
                             className="block cursor-pointer transition duration-300 hover:transform hover:scale-105"
                         >
                             <div className="border border-gray-200 rounded-xl shadow-md bg-white overflow-hidden">
@@ -889,20 +889,20 @@ export const FullBlog = ({
                                         <div className="flex-shrink-0">
                                             <div className="rounded-lg overflow-hidden border-2 border-white shadow-md">
                                                 <img
-                                                    src={author.details[0].profileUrl}
-                                                    alt={author.details[0].name}
+                                                    src={author.details.profileUrl}
+                                                    alt={author.details.name}
                                                     className="h-16 w-16 sm:h-20 sm:w-20 object-cover"
                                                 />
                                             </div>
                                         </div>
                                         <div className="ml-3 flex-grow">
                                             <h3 className="text-lg font-bold text-gray-800 mb-0.5">
-                                                {author.details[0].name}
+                                                {author.details.name}
                                             </h3>
                                             <p className="text-gray-700 font-medium mb-1 text-sm">
-                                                {author.details[0].company
-                                                    ? `${author.details[0].profession} at ${author.details[0].company}`
-                                                    : author.details[0].profession}
+                                                {author.details.company
+                                                    ? `${author.details.profession} at ${author.details.company}`
+                                                    : author.details.profession}
                                             </p>
                                             <div className="flex items-center text-gray-500">
                                                 <svg
@@ -925,7 +925,7 @@ export const FullBlog = ({
                                                         d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
                                                     />
                                                 </svg>
-                                                <span className="text-xs">{author.details[0].location}</span>
+                                                <span className="text-xs">{author.details.location}</span>
                                             </div>
                                         </div>
                                     </div>
