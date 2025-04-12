@@ -70,22 +70,14 @@ app.use('*', async (c, next) => {
 
 
 // CORS Configuration
-// app.use(
-//   cors({
-//     origin: 'https://share-it-nine.vercel.app/', // Allows all origins; you can specify allowed origins here
-//     allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-//     allowHeaders: ['Content-Type', 'Authorization'],
-//   })
-// );
-
 app.use(
   cors({
-    // origin: ['https://share-it-nine.vercel.app', "https://backend.1ms23ai014.workers.dev","*"], // Allow frontend + Worker
-    origin:'*',
+    origin: 'https://share-it-nine.vercel.app/', // Allows all origins; you can specify allowed origins here
     allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowHeaders: ['Content-Type', 'Authorization'],
   })
 );
+
 
 // Define routes
 app.route('/api/v1/user', userRouter);
