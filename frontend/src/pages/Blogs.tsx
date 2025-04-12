@@ -221,6 +221,8 @@ export const Blogs = () => {
             }
         }
 
+        console.log(post.author.details)
+
         return (
             <motion.div
                 variants={itemVariants}
