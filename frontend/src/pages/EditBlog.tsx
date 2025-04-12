@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
-import { BACKEND_URL } from '../config';
+import { BACKEND_URL, CLOUD_NAME, UPLOAD_PRESET } from '../config';
 import { Blog, useBlog, useName } from '../hooks';
 import useResponsive from '../hooks';
 import { DesktopNavbar } from '../components/navbar/DesktopNavbar';
@@ -93,8 +93,8 @@ export const EditBlog: React.FC<EditBlogProps> = () => {
             reader.onloadend = () => {
                 const image = new FormData();
                 image.append('file', file);
-                image.append('upload_preset', 'blogify');
-                axios.post("https://api.cloudinary.com/v1_1/dxj9gigbq/upload", image)
+                image.append('upload_preset', `${UPLOAD_PRESET}`);
+                axios.post(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/upload`, image)
                     .then((response) => {
                         setFormData(prev => ({ ...prev, thumbnailUrl: response.data.secure_url }));
                         setImagePreview(response.data.secure_url);
