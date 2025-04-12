@@ -165,15 +165,15 @@ const renderComments = (
                             >
                                 <div className="flex gap-2">
                                     <img
-                                        src={comment.user.details[0].profileUrl}
+                                        src={comment.user.details.profileUrl}
                                         className="h-10 w-10 rounded-full object-cover border border-gray-200"
-                                        alt={comment.user.details[0].name}
+                                        alt={comment.user.details.name}
                                     />
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center justify-between">
                                             <div>
                                                 <span className="font-semibold text-gray-800 truncate text-sm">
-                                                    {comment.userId === userId ? "You" : comment.user.details[0].name}
+                                                    {comment.userId === userId ? "You" : comment.user.details.name}
                                                 </span>
                                             </div>
                                             <div className="flex items-center gap-4">

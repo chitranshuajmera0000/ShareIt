@@ -43,7 +43,7 @@ const defaultBlog: Blog = {
         id: 0,
         userId: 0, totalCommentLikes: 0, totalCommentDislikes: 0, replies: [], showReplyInput: false,
         replyContent: "", interactions: [],
-        user: { details: [{ profileUrl: "Error 404 ", name: "User" }] },
+        user: { details: { profileUrl: "Error 404 ", name: "User" } },
         content: "Error Fetching Comments", createdAt: "Error"
     }],
     userId:0
@@ -68,7 +68,7 @@ export interface blogComment {
         details: {
             name: string;
             profileUrl: string;
-        }[];
+        };
     };
     content: string;
     createdAt: string;
