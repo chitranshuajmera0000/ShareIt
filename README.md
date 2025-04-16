@@ -34,10 +34,10 @@ ShareIt is a modern and minimalistic **blogging platform** that allows users to 
 <p align="center">
   <img src="https://res.cloudinary.com/dxj9gigbq/image/upload/v1743455502/Screenshot_2025-04-01_023903_mnhrbn.png" width="500">
   <img src="https://res.cloudinary.com/dxj9gigbq/image/upload/v1743455502/Screenshot_2025-04-01_023851_edvzqz.png" width="500">
-  <img src="https://res.cloudinary.com/dxj9gigbq/image/upload/v1743455501/Screenshot_2025-04-01_023720_ljdtzl.png" width="500">
+  <img src="https://res.cloudinary.com/dxj9gigbq/image/upload/v1744778785/Screenshot_2025-04-16_101025_id13yl.png" width="500">
   <img src="https://res.cloudinary.com/dxj9gigbq/image/upload/v1743455501/Screenshot_2025-04-01_023829_i46nwb.png" width="500">
-  <img src="https://res.cloudinary.com/dxj9gigbq/image/upload/v1743455502/Screenshot_2025-04-01_023841_vjhgny.png" width="500">
-  <img src="https://res.cloudinary.com/dxj9gigbq/image/upload/v1743455501/Screenshot_2025-04-01_023733_dumwqz.png" width="500">
+  <img src="https://res.cloudinary.com/dxj9gigbq/image/upload/v1744778878/Screenshot_2025-04-16_100831_mjtiuw.png" width="500">
+  <img src="https://res.cloudinary.com/dxj9gigbq/image/upload/v1744778785/Screenshot_2025-04-16_101033_h5pvn0.png" width="500">
 </p>
 
 ---
