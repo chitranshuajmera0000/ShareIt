@@ -123,5 +123,3 @@ For any queries, feel free to reach out:
 
 ---
 **Star ⭐ this repo if you found it useful!** 🎉
-
-update this as i have added bcrypt password hashing and added categories for blogs
