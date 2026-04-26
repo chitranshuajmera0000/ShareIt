@@ -14,9 +14,6 @@
   <img src="https://img.shields.io/github/stars/chitranshuajmera0000/ShareIt?style=for-the-badge" alt="GitHub stars">
 </p>
 
-<p align="center">
-  <img src="assets/banner.png" alt="ShareIt Banner" width="100%">
-</p>
 
 ---
 
