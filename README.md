@@ -5,6 +5,10 @@
 </p>
 
 <p align="center">
+  <img src="https://res.cloudinary.com/dxj9gigbq/image/upload/v1742018435/upscalemedia-transformed_woy6ow.png" width="400">
+</p>
+
+<p align="center">
   <a href="https://share-it-nine.vercel.app/">
     <img src="https://img.shields.io/badge/Live%20Demo-Vercel-blue?style=for-the-badge&logo=vercel" alt="Live Demo">
   </a>
