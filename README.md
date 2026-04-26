@@ -1,12 +1,8 @@
+<p align="center">
+  <img src="https://res.cloudinary.com/dxj9gigbq/image/upload/v1742018435/upscalemedia-transformed_woy6ow.png" width="600">
+</p>
+
 # <p align="center">✨ ShareIt - A Modern Blogging Platform ✨</p>
-
-<p align="center">
-  <img src="assets/banner.png" alt="ShareIt Banner" width="100%">
-</p>
-
-<p align="center">
-  <img src="https://res.cloudinary.com/dxj9gigbq/image/upload/v1742018435/upscalemedia-transformed_woy6ow.png" width="400">
-</p>
 
 <p align="center">
   <a href="https://share-it-nine.vercel.app/">
@@ -16,6 +12,10 @@
     <img src="https://img.shields.io/github/license/chitranshuajmera0000/ShareIt?style=for-the-badge" alt="License">
   </a>
   <img src="https://img.shields.io/github/stars/chitranshuajmera0000/ShareIt?style=for-the-badge" alt="GitHub stars">
+</p>
+
+<p align="center">
+  <img src="assets/banner.png" alt="ShareIt Banner" width="100%">
 </p>
 
 ---
