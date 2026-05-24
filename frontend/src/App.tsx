@@ -67,6 +67,7 @@ import AuthorProfile from "./pages/AuthorProfile";
 import HomePage from "./pages/HomePage";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AlertProvider } from "./components/AlertContext"; // Import AlertProvider
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 function App() {
   return (
@@ -89,6 +90,7 @@ function App() {
           </Route>
         </Routes>
       </BrowserRouter>
+      <SpeedInsights />
     </AlertProvider>
   );
 }

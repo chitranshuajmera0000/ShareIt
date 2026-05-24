@@ -30,6 +30,7 @@
     "@tiptap/pm": "^2.11.5",
     "@tiptap/react": "^2.11.5",
     "@tiptap/starter-kit": "^2.11.5",
+    "@vercel/speed-insights": "^2.0.0",
     "axios": "^1.8.4",
     "cloudinary-react": "^1.8.1",
     "flowbite-typography": "^1.0.5",
